@@ -1,0 +1,19 @@
+{
+	"private": true,
+	"license": "MIT",
+  "scripts": {
+		"setup": "npm install -g yarn lerna @angular/cli && git submodule init && yarn update",
+		"update": "git submodule update && lerna bootstrap && lerna link",
+		"clean": "lerna clean"
+	},
+	"devDependencies": {
+		"lerna": "^2.8.0"
+	},
+	"dependencies": {
+		"bootstrap": "^4.0.0"
+	},
+	"workspaces": [
+		"packages/*",
+		"ngx-dino/packages/*"
+  ]
+}
