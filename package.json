@@ -3,7 +3,9 @@
 	"license": "MIT",
   "scripts": {
 		"build": "yarn build-client && yarn build-database",
-		"setup": "npm install -g yarn lerna @angular/cli && git submodule init && git submodule update && lerna bootstrap && lerna link",
+		"setup": "npm install -g yarn lerna @angular/cli && git submodule init && yarn update",
+		"update": "git submodule update && lerna bootstrap && lerna link",
+		"clean": "lerna clean",
 		"build-database": "lerna run build --scope=famri-database",
 		"build-client": "lerna run build --scope=client"
 	},
