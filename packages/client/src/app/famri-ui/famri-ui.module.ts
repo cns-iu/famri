@@ -8,6 +8,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 
+import { VisualizationModule } from '../visualization';
+
 import { HomeComponent } from './home/home.component';
 
 @NgModule({
@@ -19,7 +21,9 @@ import { HomeComponent } from './home/home.component';
     MatIconModule,
     MatToolbarModule,
     MatExpansionModule,
-    MatTabsModule
+    MatTabsModule,
+
+    VisualizationModule
   ],
   exports: [
     HomeComponent

@@ -6,17 +6,23 @@
 
 <mat-sidenav-container>
   <mat-sidenav #sidenav class="sidenav" mode="side" [opened]="true">
-    aaa
+    <p class="sidenavTitle">Filters</p>
+    <hr>
+    <br><br><br>
+    <p class="sidenavTitle">Legend</p>
+    <hr>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-tab-group #tabs>
       <mat-tab label="Co-author Network">
-        qwerty
+        <famri-coauthor-network></famri-coauthor-network>
       </mat-tab>
       <mat-tab label="Science Map">
+        <famri-science-map></famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
+        <famri-geomap></famri-geomap>
       </mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>
