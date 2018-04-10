@@ -1,0 +1,1 @@
+export { FamriUiModule } from './famri-ui.module';

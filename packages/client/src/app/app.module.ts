@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { FamriUiModule } from './famri-ui';
 
 import { AppComponent } from './app.component';
 
@@ -10,7 +11,9 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+
+    FamriUiModule
   ],
   providers: [],
   bootstrap: [AppComponent]
