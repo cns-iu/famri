@@ -1,0 +1,20 @@
+{
+	"private": true,
+	"license": "MIT",
+  "scripts": {
+		"build": "yarn build-client && yarn build-database",
+		"setup": "npm install -g yarn lerna @angular/cli && git submodule init && git submodule update && lerna bootstrap && lerna link",
+		"build-database": "lerna run build --scope=famri-database",
+		"build-client": "lerna run build --scope=client"
+	},
+	"devDependencies": {
+		"lerna": "^2.8.0"
+	},
+	"dependencies": {
+		"bootstrap": "^4.0.0"
+	},
+	"workspaces": [
+		"packages/*",
+		"ngx-dino/packages/*"
+  ]
+}
