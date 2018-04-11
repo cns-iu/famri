@@ -5,7 +5,11 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-  <mat-sidenav #sidenav class="sidenav" mode="side" [opened]="true">
+  <mat-sidenav #sidenav
+    class="sidenav"
+    mode="side"
+    [opened]="true"
+    (openedChange)="openState = $event">
     <p class="sidenavTitle">Filters</p>
     <hr>
     <br><br><br>
@@ -19,7 +23,20 @@
         <famri-coauthor-network></famri-coauthor-network>
       </mat-tab>
       <mat-tab label="Science Map">
-        <famri-science-map></famri-science-map>
+        <famri-science-map *ngIf="openState"
+          [width]="narrowWidth"
+          [height]="height"
+          [filter]="filter"
+          (nodeClicked)="results.showSubdiscipline($event)"
+          (filterUpdateComplete)="filtersUpdating = false">
+        </famri-science-map>
+        <famri-science-map *ngIf="!openState"
+          [width]="wideWidth"
+          [height]="height"
+          [filter]="filter"
+          (nodeClicked)="results.showSubdiscipline($event)"
+          (filterUpdateComplete)="filtersUpdating = false">
+        </famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
         <famri-geomap></famri-geomap>
