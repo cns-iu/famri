@@ -6,6 +6,6 @@ export type RxPublicationDocument = RxDocument<Publication>;
 
 declare class RxPublicationCollection extends RxCollection<Publication> { }
 
-export class RxDatabase extends RxDatabase {
+export class RxDatabaseStore extends RxDatabase {
   publication?: RxPublicationCollection;
 }

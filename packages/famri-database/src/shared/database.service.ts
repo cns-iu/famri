@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/of';
+import 'rxjs/add/observable/of';
 
 import { Filter } from '../shared/filter';
 import { Publication } from '../shared/publication';

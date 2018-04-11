@@ -5,6 +5,5 @@
 
 export const environment = {
   production: false,
-  // graphqlEndpoint: 'ws://localhost:4000/subscriptions'
-  graphqlEndpoint: 'http://localhost:4000/graphql'
+  graphqlEndpoint: 'clientdb'
 };

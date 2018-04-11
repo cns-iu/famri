@@ -7,11 +7,11 @@ import * as IDBAdapter from 'pouchdb-adapter-idb';
 import * as WebSQLAdapter from 'pouchdb-adapter-node-websql';
 import * as MemoryAdapter from 'pouchdb-adapter-memory';
 
-import { RxDatabase } from './rxdb-types.d';
+import { RxDatabaseStore } from './rxdb-types.d';
 import { PublicationSchema } from './publication.schema';
 
 export class DatabaseService {
-  private static dbPromise: Promise<RxDatabase> = null;
+  private static dbPromise: Promise<RxDatabaseStore> = null;
 
   collections: any[] = [
     { name: 'publication', schema: PublicationSchema }
@@ -25,7 +25,7 @@ export class DatabaseService {
 
   constructor(private production?: boolean, private adapter: string = 'memory', private rxdbOptions: any = {}) { }
 
-  get(initializer?: (db: RxDatabase) => Promise<any>): Promise<RxDatabase> {
+  get(initializer?: (db: RxDatabaseStore) => Promise<any>): Promise<RxDatabaseStore> {
     if (!DatabaseService.dbPromise) {
       DatabaseService.dbPromise = this._create(initializer);
     }
@@ -42,15 +42,15 @@ export class DatabaseService {
     this.log(`${collection}: ${results}`);
   }
 
-  private async initialize(db: RxDatabase) {
+  private async initialize(db: RxDatabaseStore) {
     // Do nothing...
   }
 
-  private async _create(initializer?: (db: RxDatabase) => Promise<any>): Promise<RxDatabase> {
+  private async _create(initializer?: (db: RxDatabaseStore) => Promise<any>): Promise<RxDatabaseStore> {
     this.setupPlugins();
 
     this.log('DatabaseService: creating database');
-    const db: RxDatabase = await RxDB.create(Object.assign({
+    const db: RxDatabaseStore = await RxDB.create(Object.assign({
       name: 'famri',
       adapter: this.adapter
     }, this.rxdbOptions));

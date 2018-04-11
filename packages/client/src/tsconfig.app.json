@@ -11,10 +11,12 @@
     "../../../**/*.spec.ts",
     "../../../**/*.d.ts",
     "../../../**/*-spec.ts",
-    "../../../ngx-dino/packages/dino-*/node_modules/**/*.ts"
+    "../../../ngx-dino/packages/dino-*/node_modules/**/*.ts",
+    "../../famri-*/node_modules/**/*.ts"
   ],
   "include": [
     "**/*.ts",
+    "../../famri-*/**/*.ts",
     "../../../ngx-dino/packages/dino-*/**/*.ts"
   ]
 }

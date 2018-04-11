@@ -29,7 +29,7 @@ async function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, val
   return acc;
 }
 
-export async function getPublications(database: DatabaseService, filter: Partial<Filter> = {}): Promise<RxPublicationDocument[]> {
+export async function getPublications(database: DatabaseService, filter: Partial<Filter> | any = {}): Promise<RxPublicationDocument[]> {
   const db = await database.get();
 
   let query = db.publication.find();
@@ -79,7 +79,7 @@ export async function getPublications(database: DatabaseService, filter: Partial
   return results || [];
 }
 
-export async function getSubdisciplines(database: DatabaseService, filter: Partial<Filter> = {}): Promise<SubdisciplineWeight[]> {
+export async function getSubdisciplines(database: DatabaseService, filter: Partial<Filter> | any = {}): Promise<SubdisciplineWeight[]> {
   const publications = await getPublications(database, filter);
   const weights = await sumAgg<RxPublicationDocument>(publications, 'subdisciplines', 'subd_id', 'weight');
 
