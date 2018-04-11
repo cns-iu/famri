@@ -1,73 +1,74 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import gql from 'graphql-tag';
-
-import { Apollo } from 'apollo-angular';
+import 'rxjs/add/operator/of';
 
 import { Filter } from '../shared/filter';
 import { Publication } from '../shared/publication';
+import { Author, CoAuthorEdge } from '../shared/author';
+import { Grant } from '../shared/grant';
+
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
 
-export const GET_PUBLICATIONS = gql`
-  query (
-    $filter: Filter!
-  ) {
-    getPublications(filter: $filter) {
-      id
-      author
-      year
-      title
-      pmid
-      doi
-      pmcid
-      journalName
+import * as database from '../../../../raw-data/database.json';
+
+function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueField: string): Promise<{[key: string]: number}> {
+  const acc: any = {};
+  for (const innerItem of items) {
+    for (const item of innerItem[itemKeyField]) {
+      const key = item[keyField];
+      const weight = item[valueField];
+      if (acc.hasOwnProperty(key)) {
+        acc[key] += weight;
+      } else {
+        acc[key] = weight;
+      }
     }
   }
-`;
+  return acc;
+}
 
-export const GET_SUBDISCIPLINES = gql`
-  query (
-    $filter: Filter!
-  ) {
-    getSubdisciplines(filter: $filter) {
-      subd_id
-      weight
-    }
-  }
-`;
-
-export const GET_DISTINCT = gql`
-  query (
-    $fieldName: String!,
-    $filter: Filter!
-  ) {
-    getDistinct(fieldName: $fieldName, filter: $filter)
-  }
-`;
+const grants: Grant[] = database.grants;
+const publications: Publication[] = database.publications;
+const authors: Author[] = [];
+const coauthors: CoAuthorEdge[] = [];
 
 @Injectable()
 export class DatabaseService {
-  constructor(private apollo: Apollo) { }
+  constructor() { }
 
+  getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
+    return Observable.of(authors);
+  }
+  getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
+    return Observable.of(coauthors);
+  }
+  getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
+    return Observable.of(grants);
+  }
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
-    return this.apollo.query<Publication[]>({
-      query: GET_PUBLICATIONS,
-      variables: { filter }
-    }).map((result) => result.data['getPublications']);
+    return Observable.of(publications);
   }
 
   getSubdisciplines(filter: Partial<Filter> = {}): Observable<SubdisciplineWeight[]> {
-    return this.apollo.query<SubdisciplineWeight[]>({
-      query: GET_SUBDISCIPLINES,
-      variables: { filter }
-    }).map((result) => result.data['getSubdisciplines']);
+    return this.getPublications(filter).map((publications) => {
+      const weights = sumAgg<Publication>(publications, 'subdisciplines', 'subd_id', 'weight');
+      return Object.entries(weights).map(([k, v]) => <SubdisciplineWeight>{subd_id: <number>(<any>k), weight: v});
+    });
   }
 
   getDistinct(fieldName: string, filter: Partial<Filter> = {}): Observable<string[]> {
-    return this.apollo.query<string[]>({
-      query: GET_DISTINCT,
-      variables: { fieldName, filter }
-    }).map((result) => result.data['getDistinct']);
+    return this.getPublications(filter).map((publications) => {
+      const seen: any = {};
+      const values: string[] = [];
+      for (const pub of publications) {
+        const value = pub[fieldName];
+        if (!seen.hasOwnProperty(value)) {
+          seen[value] = true;
+          values.push(value);
+        }
+      }
+      return values;
+    });
   }
 }

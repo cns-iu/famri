@@ -1,10 +1,11 @@
 const fs = require('fs');
+const zipcodes = require('zipcodes');
 
 import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
 import { journalLookup, disciplineLookup } from './science-mapper';
 
-import { GRANTS, PUBS, DB_JSON } from './options';
+import { GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
 
 function readXLS(inputFile: string, sheetName?: string): any[] {
   const wb = XLSX.readFile(inputFile);
@@ -12,6 +13,9 @@ function readXLS(inputFile: string, sheetName?: string): any[] {
   const ws = wb.Sheets[sheetName];
   const data = XLSX.utils.sheet_to_json(ws);
   return data;
+}
+function readJSON(inputFile: string): any {
+  return JSON.parse(fs.readFileSync(inputFile));
 }
 function writeJSON(outputFile: string, obj: any) {
   fs.writeFileSync(outputFile, JSON.stringify(obj, null, 2), 'utf8');
@@ -45,75 +49,82 @@ function fulltext(...fields: string[]): Operator<any, string> {
   return Operator.combine(fields.map((f) => a(f)))
     .map(v => v.filter(s => !!s).join(' ').replace(/\s+/g, ' ').toLowerCase());
 }
-
-const CLASS_FIELDS = [
-  'AGE', 'AH', 'AW', 'CS', 'DH', 'EGX', 'IB', 'IMM', 'MFS', 'MIC', 'NS', 'PHM',
-  'PS', 'RE', 'RRR', 'SB', 'SC', 'SS', 'STR', 'SYN', 'TD', 'AFS', 'BH', 'IBBE',
-  'NWW', 'WUB'
-];
-const getClassifications = Operator.map((item: any): string[] => {
-  const classes = [];
-  for (const c of CLASS_FIELDS) {
-    const value = item[c] || null;
-    if (value && value !== '-' && !value.endsWith('X')) {
-      classes.push(c === 'EGX' ? 'EG' : c);
-    }
-  }
-  return classes;
-});
+function pad(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length-size);
+}
+function cleanZip(zipcode: string): string {
+  const zip = parseInt((zipcode || '').replace(/[^0-9]/g, '').trim());
+  return isNaN(zip) ? null : pad(zip, 5);
+}
+function zip2latlon(field): Operator<string, [number, number]> {
+  return a(field).map<string>(cleanZip).map<[number, number]>((zip) => {
+    const latlon = zipcodes.lookup(zip);
+    return latlon ? [latlon.latitude, latlon.longitude] : null;
+  })
+}
+function zip2state(field): Operator<string, string> {
+  return a(field).map<string>((rawZip) => {
+    const zip = cleanZip(rawZip);
+    const latlon = zipcodes.lookup(zip) || zipcodes.lookup(rawZip);
+    return latlon ? latlon.state : null;
+  })
+}
+function zip2location(field): Operator<string, any> {
+  return a(field).map<any>((rawZip) => {
+    const zip = cleanZip(rawZip);
+    const latlon = zipcodes.lookup(zip) || zipcodes.lookup(rawZip);
+    return latlon ? latlon : null; // {zip, unmapped: true};
+  });
+}
 
 const grantsProcessor = Operator.combine({
-  'id': a('GrantReference'),
-  'title': a('Title'),
-  'technical_summary': a('TechnicalSummary'),
-  'initiative': a('Initiative'),
-  'mechanism': a('InvestmentMechanism'),
-  'start_date': a('StartDate'),
-  'end_date': a('EndDate'),
-  'scheme_name': a('SchemeName'),
-  'institution': a('AwardInstitution'),
-  'department': a('AwardDepartment'),
-  'session_year': n('Session'),
-  'group_member': a('GroupMember'),
-  'total_award_value': n('TotalAwardValue'),
+  'id': a('FAMRI ID number'),
   'pi': {
-    'title': a('PI Title'),
-    'first_name': a('PI FirstName'),
-    'last_name': a('PI Surname'),
-    'initials': a('PI Initials')
+    'first_name': a('PI_First_ Name'),
+    'last_name': a('PI_Last_Name')
   },
-  'research_classification': getClassifications
+  'title': a('Title'),
+  'initialZipCode': a('Initial Zip Code'),
+  'currentZipCode': a('Current Zip Code'),
+
+  'initialLocation': zip2location('Initial Zip Code'),
+  'currentLocation': zip2location('Current Zip Code'),
 });
 let grants: any[] = readXLS(GRANTS).map(grantsProcessor.getter);
 let grantsMap: any = {};
-grants.forEach((grant) => { grantsMap[grant.id] = grant; });
+grants.forEach((grant) => {
+  if (grant.initialLocation && !grant.currentLocation) {
+    grant.initialLocation = grant.currentLocation;
+  }
+  grantsMap[grant.id] = grant;
+});
 
 const pubsProcessor = Operator.combine({
-  'id': Operator.autoId(),
-  'grant_id': a('File Reference'),
-  'grant': a('File Reference').lookup(grantsMap),
-  'type': a('Type'),
-  'pmid': a('PMID'),
-  'author': a('Author'),
-  'title': a('Publication title'),
-  'journal_name': a('Journal'),
-  'volume': a('Volume'),
-  'issue': a('Issue'),
-  'pages': a('Pages'),
-  'month': a('Month'),
-  'year': n('Year'),
-  'pmcid': a('PMCID'),
-  'doi': a('DOI')
-});
-const pubs: any[] = readXLS(PUBS).map(pubsProcessor.getter);
+  'id': n('recNumber'),
+  'title': a('title'),
+  'journalName': a('journal'),
+  'address': a('address'),
+  'authors': a('authors'),
+  'pages': a('pages'),
+  'volume': a('volume'),
+  'number': a('number'),
+  'isbn': a('isbn'),
+  'abstract': a('abstract'),
+  'year': n('year'),
+  'date': a('date'),
+  'keywords': a('keywords'),
+  'urls': a('urls')
 
-grants = null;
-grantsMap = null;
+  // 'grant_id': a('FAMRI ID number'),
+  // 'grant': a('File Reference').lookup(grantsMap),
+});
+const pubs: any[] = readJSON(CLEAN_PUBS).map(pubsProcessor.getter);
 
 let journal2weights: any = {};
 let journal2journ_id: any = {};
 pubs.forEach((pub) => {
-  const journal = pub.journal_name;
+  const journal = pub.journalName;
   if (!journal2journ_id.hasOwnProperty(journal)) {
     pub.journ_id = journal2journ_id[journal] = journalLookup.access('id').get(journal);
     if (pub.journ_id) {
@@ -133,27 +144,21 @@ journal2weights = null;
 const pubsDBProcessor = Operator.combine({
   'id': a('id'),
   'title': a('title'),
-  'author': a('author'),
+  'authors': a('authors'),
   'year': n('year'),
-  'pmid': a('pmid'),
-  'doi': a('doi'),
-  'pmcid': a('pmcid'),
 
-  'journalName': a('journal_name'),
+  'journalName': a('journalName'),
   'journalId': a('journ_id'),
-  'subdisciplines': a('subdisciplines'),
-
-  'grantId': a('grant_id'),
-  'grantTitle': a('grant.title'),
-  'grantClasses': a('grant.research_classification'),
-  'grantYear': a('grant.session_year'),
-  'grantInstitution': a('grant.institution'),
-  'grantMechanism': a('grant.mechanism'),
-  'fulltext': fulltext('title', 'grant.title', 'grant.technical_summary')
+  'subdisciplines': a('subdisciplines')
 });
+const publications = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0).map(pubsDBProcessor.getter);
 
-const mappedPubs = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0);
-writeJSON(DB_JSON, mappedPubs.map(pubsDBProcessor.getter));
+const db: any = {
+  publications,
+  grants
+};
+
+writeJSON(DB_JSON, db);
 // writeJSONArray(DB_JSON, mappedPubs, pubsDBProcessor);
 
 // console.log(grants.length);
