@@ -1,6 +1,6 @@
 {
   "rulesDirectory": [
-    "node_modules/codelyzer"
+    "../../node_modules/codelyzer"
   ],
   "rules": {
     "arrow-return-shorthand": true,
@@ -126,7 +126,7 @@
     "component-selector": [
       true,
       "element",
-      "app",
+      "famri",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

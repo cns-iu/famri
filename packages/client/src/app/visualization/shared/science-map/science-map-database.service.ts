@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { DatabaseService, Filter, SubdisciplineWeight } from 'famri-database';
+
+
 @Injectable()
 export class ScienceMapDatabaseService {
 

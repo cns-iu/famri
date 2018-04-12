@@ -1,5 +1,5 @@
-import { Operator } from '@ngx-dino/core/operators';
-import { FieldV2 as Field} from '@ngx-dino/core';
+import { FieldV2 as Field, Operator} from '@ngx-dino/core';
+import '@ngx-dino/core/src/operators/add/static/access';
 
 
 export const subdisciplineSizeField = new Field<string>({
