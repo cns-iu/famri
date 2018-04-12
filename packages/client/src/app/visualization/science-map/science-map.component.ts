@@ -29,7 +29,7 @@ export class ScienceMapComponent implements OnInit, OnChanges {
   subdisciplineSize: BoundField<string>;
   subdisciplineID: BoundField<number|string>;
   filteredSubdisciplines: SubdisciplineWeight[];
-  
+
   constructor(private dataService: ScienceMapDatabaseService) { }
 
   ngOnInit() {

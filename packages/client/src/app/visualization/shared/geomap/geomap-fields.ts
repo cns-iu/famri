@@ -34,12 +34,12 @@ export const pointPositionField = new Field<[number, number]>({
   label: 'Point Latitude and Longitude',
 
   mapping: {
-    initial: Operator.access('initialLocation', invalidLatLongObj).map(
-      ({latitude, longitude}): [number, number] => [latitude, longitude]
-    ),
-    current: Operator.access('currentLocation', invalidLatLongObj).map(
-      ({latitude, longitude}): [number, number] => [latitude, longitude]
-    )
+    initial: Operator.access('initialLocation')
+      .map((o) => o || invalidLatLongObj)
+      .map(({latitude, longitude}): [number, number] => [latitude, longitude]),
+    current: Operator.access('currentLocation')
+      .map((o) => o || invalidLatLongObj)
+      .map(({latitude, longitude}): [number, number] => [latitude, longitude])
   }
 });
 
@@ -64,7 +64,7 @@ export const pointColorField = new Field<string>({
   mapping: {fixed: Operator.constant('black')}
 });
 
-export const strokeColorField = new Field<string>({
+export const pointStrokeColorField = new Field<string>({
   id: 'pstroke-color',
   label: 'Point Stroke Color',
 
