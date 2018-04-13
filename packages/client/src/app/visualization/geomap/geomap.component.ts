@@ -7,7 +7,10 @@ import {
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
-import { BoundField, BoundFieldAdapter, adaptBoundField } from '@ngx-dino/core';
+import {
+  FieldV2 as Field, BoundField, BoundFieldAdapter,
+  adaptBoundField
+} from '@ngx-dino/core';
 import { Filter } from 'famri-database';
 
 import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service';
@@ -40,8 +43,9 @@ export class GeomapComponent implements OnInit, OnChanges {
   constructor(private service: GeomapDatabaseService) { }
 
   ngOnInit() {
+    this.stateData = this.service.countsByState;
     this.stateField = Fields.stateField.getBoundField('default');
-    this.stateColorField = Fields.stateColorField.getBoundField('default');
+    this.stateColorField = this.service.stateColorField.getBoundField('gradient');
 
     this.pointData = this.service.filteredGrants;
     this.pointIdField = Fields.pointIdField.getBoundField('gid');
@@ -62,6 +66,9 @@ export class GeomapComponent implements OnInit, OnChanges {
       this.pointColorField,
       this.pointStrokeColorField
     );
+    this.adapters.forEach((f, i, a) => {
+      a[i] = adaptBoundField(f);
+    });
 
     this.service.fetchData();
   }

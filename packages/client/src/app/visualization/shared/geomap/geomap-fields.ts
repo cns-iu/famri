@@ -1,23 +1,21 @@
 import { FieldV2 as Field, Operator } from '@ngx-dino/core';
 import '@ngx-dino/core/src/operators/add/static/access';
 import '@ngx-dino/core/src/operators/add/static/constant';
+import '@ngx-dino/core/src/operators/add/static/map';
 import '@ngx-dino/core/src/operators/add/method/map';
 
-
-const emptyField = new Field<any>({
-  id: 'empty',
-  label: 'No Data',
-
-  initialOp: Operator.constant(undefined),
-  mapping: {default: true}
-});
 
 const invalidLatLongObj = {latitude: Infinity, longitude: Infinity};
 
 
 // State fields
-export const stateField = emptyField;
-export const stateColorField = emptyField;
+export const stateField = new Field<string>({
+  id: 'state',
+  label: 'State',
+
+  initialOp: Operator.access('state'),
+  mapping: {default: true}
+});
 
 
 // Point fields
