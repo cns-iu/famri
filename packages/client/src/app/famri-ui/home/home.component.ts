@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component, ViewChild,
+  OnInit
+} from '@angular/core';
+import { MatTabGroup } from '@angular/material';
 
 import { Filter } from 'famri-database';
 
@@ -8,6 +12,8 @@ import { Filter } from 'famri-database';
   styleUrls: ['./home.component.sass']
 })
 export class HomeComponent implements OnInit {
+  @ViewChild('tabs') tabs: MatTabGroup;
+  tabIndex: number = 0;
 
   filter: Partial<Filter> = {};
   filtersUpdating = false;
@@ -20,6 +26,6 @@ export class HomeComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.tabs.selectedIndexChange.subscribe((index) => (this.tabIndex = index));
   }
-
 }

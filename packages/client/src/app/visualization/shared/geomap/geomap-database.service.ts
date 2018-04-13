@@ -12,6 +12,7 @@ import '@ngx-dino/core/src/operators/add/static/map';
 
 import { DatabaseService, Filter, Grant } from 'famri-database';
 
+
 @Injectable()
 export class GeomapDatabaseService {
   private grantSubscription: Subscription;
@@ -27,7 +28,7 @@ export class GeomapDatabaseService {
     mapping: {
       default: Operator.constant(undefined),
       gradient: Operator.map((count) => {
-        return gradient(count / this.maxCountRef.max);
+        return gradient(.75 * count / this.maxCountRef.max + .25);
       })
     }
   });
