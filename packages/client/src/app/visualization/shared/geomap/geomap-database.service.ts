@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { interpolateOrRd as gradient } from 'd3-scale-chromatic';
+import { interpolateOrRd as rawGradient } from 'd3-scale-chromatic';
 
 import { Operator, FieldV2 as Field, Changes } from '@ngx-dino/core';
 import '@ngx-dino/core/src/operators/add/static/access';
@@ -18,8 +18,8 @@ export class GeomapDatabaseService {
   private grantSubscription: Subscription;
   private lastCounts: any[] = [];
   private lastGrants: Grant[] = [];
-  private readonly maxCountRef = {max: 0};
 
+  readonly maxCountRef = {max: 0};
   readonly stateColorField = new Field<string>({
     id: 'scolor',
     label: 'State Color',
@@ -27,9 +27,7 @@ export class GeomapDatabaseService {
     initialOp: Operator.access('count'),
     mapping: {
       default: Operator.constant(undefined),
-      gradient: Operator.map((count) => {
-        return gradient(.75 * count / this.maxCountRef.max + .25);
-      })
+      gradient: Operator.map(this.gradient.bind(this))
     }
   });
 
@@ -80,5 +78,9 @@ export class GeomapDatabaseService {
     this.lastCounts = result;
     this.maxCountRef.max = max;
     this.countsByState.emit(changes);
+  }
+
+  gradient(value: number): string {
+    return rawGradient(.75 * value / this.maxCountRef.max + .25);
   }
 }

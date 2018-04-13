@@ -20,8 +20,7 @@ import * as Fields from '../shared/geomap/geomap-fields';
 @Component({
   selector: 'famri-geomap',
   templateUrl: './geomap.component.html',
-  styleUrls: ['./geomap.component.sass'],
-  providers: [GeomapDatabaseService]
+  styleUrls: ['./geomap.component.sass']
 })
 export class GeomapComponent implements OnInit, OnChanges {
   stateData = Observable.of();
