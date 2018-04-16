@@ -5,29 +5,27 @@ import {
   OnInit,
   OnChanges,
   Output,
-  SimpleChanges,
+  SimpleChanges
 } from '@angular/core';
 
 import { BoundField } from '@ngx-dino/core';
 
 import { Filter, SubdisciplineWeight } from 'famri-database';
-import { subdisciplineSizeField, subdisciplineIDField } from '../shared/science-map/science-map-fields';
+
+import { subdisciplineSizeField } from '../shared/science-map/science-map-fields';
 import { ScienceMapDatabaseService } from '../shared/science-map/science-map-database.service';
 
 @Component({
-  selector: 'famri-science-map',
-  templateUrl: './science-map.component.html',
-  styleUrls: ['./science-map.component.sass'],
-  providers: [ ScienceMapDatabaseService ]
+  selector: 'famri-science-map-legend',
+  templateUrl: './science-map-legend.component.html',
+  styleUrls: ['./science-map-legend.component.sass'],
+  providers: [ScienceMapDatabaseService]
 })
-export class ScienceMapComponent implements OnInit, OnChanges {
+export class ScienceMapLegendComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};
   @Output() filterUpdateComplete = new EventEmitter<boolean>();
-  @Input() width: number;
-  @Input() height: number;
 
   subdisciplineSize: BoundField<string>;
-  subdisciplineID: BoundField<number|string>;
   filteredSubdisciplines: SubdisciplineWeight[];
 
   constructor(private dataService: ScienceMapDatabaseService) { }
@@ -35,13 +33,8 @@ export class ScienceMapComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.filteredSubdisciplines = [];
 
-    this.dataService.filteredSubdisciplines.subscribe((subdisciplines) => {
-      this.filteredSubdisciplines = subdisciplines;
-    });
-
     // not user facing
     this.subdisciplineSize = subdisciplineSizeField.getBoundField('size');
-    this.subdisciplineID = subdisciplineIDField.getBoundField('id');
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -50,5 +43,8 @@ export class ScienceMapComponent implements OnInit, OnChanges {
           undefined, undefined, () => this.filterUpdateComplete.emit(true)
         );
       }
-    }
+    this.dataService.filteredSubdisciplines.subscribe((subdisciplines) => {
+      this.filteredSubdisciplines = subdisciplines;
+    });
   }
+}
