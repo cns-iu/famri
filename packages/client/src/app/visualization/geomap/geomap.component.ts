@@ -20,6 +20,11 @@ import * as Fields from '../shared/geomap/geomap-fields';
   styleUrls: ['./geomap.component.sass']
 })
 export class GeomapComponent implements OnInit, OnChanges {
+  @Input() width: number;
+  @Input() height: number;
+
+  @Input() filter: Partial<Filter> = {};
+
   stateData = Observable.of();
   stateField: BoundField<string>;
   stateColorField: BoundField<string>;
@@ -34,8 +39,6 @@ export class GeomapComponent implements OnInit, OnChanges {
   pointStrokeColorField: BoundField<string>;
 
   adapters = [];
-
-  @Input() filter: Partial<Filter> = {};
 
   constructor(private service: GeomapDatabaseService) { }
 

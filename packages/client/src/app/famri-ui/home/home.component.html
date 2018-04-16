@@ -47,8 +47,7 @@
         </famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
-        <famri-geomap></famri-geomap>
-        <div class="geomap-filler"></div>
+        <famri-geomap [width]="openState ? narrowWidth : wideWidth" [height]="height"></famri-geomap>
       </mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>
