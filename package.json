@@ -3,6 +3,7 @@
 	"license": "MIT",
   "scripts": {
 		"build": "yarn build-client && yarn build-database",
+		"start": "cd packages/client && yarn start",
 		"setup": "npm install -g yarn lerna @angular/cli && git submodule init && yarn update",
 		"update": "git submodule update && lerna bootstrap && lerna link",
 		"clean": "lerna clean",

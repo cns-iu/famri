@@ -7,7 +7,10 @@ import { DinoGeomapModule } from '@ngx-dino/geomap';
 
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
 import { ScienceMapComponent } from './science-map/science-map.component';
+
+import { GeomapDatabaseService } from './shared/geomap/geomap-database.service';
 import { GeomapComponent } from './geomap/geomap.component';
+import { GeomapLegendComponent } from './geomap-legend/geomap-legend.component';
 
 @NgModule({
   imports: [
@@ -20,8 +23,15 @@ import { GeomapComponent } from './geomap/geomap.component';
   exports: [
     CoauthorNetworkComponent,
     ScienceMapComponent,
-    GeomapComponent
+    GeomapComponent,
+    GeomapLegendComponent
   ],
-  declarations: [CoauthorNetworkComponent, ScienceMapComponent, GeomapComponent]
+  declarations: [
+    CoauthorNetworkComponent,
+    ScienceMapComponent,
+    GeomapComponent,
+    GeomapLegendComponent
+  ],
+  providers: [GeomapDatabaseService]
 })
 export class VisualizationModule { }

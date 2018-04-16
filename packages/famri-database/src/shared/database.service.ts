@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/of';
 import { Map, Set } from 'immutable';
+
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/map';
 
 import { Filter } from '../shared/filter';
 import { Publication } from '../shared/publication';
@@ -96,7 +98,7 @@ export class DatabaseService {
     return Observable.of(coauthors);
   }
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
-    return Observable.of(grants);
+    return Observable.of(grants).delay(1);
   }
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
     return Observable.of(publications);

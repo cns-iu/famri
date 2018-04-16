@@ -1,2 +1,12 @@
-<dino-geomap>
+<dino-geomap [stateDataStream]="stateData"
+             [stateField]="adapters[0]"
+             [stateColorField]="adapters[1]"
+
+             [pointDataStream]="pointData"
+             [pointIdField]="adapters[2]"
+             [pointLatLongField]="adapters[3]"
+             [pointShapeField]="adapters[4]"
+             [pointSizeField]="adapters[5]"
+             [pointColorField]="adapters[6]"
+             [strokeColorField]="adapters[7]">
 </dino-geomap>
