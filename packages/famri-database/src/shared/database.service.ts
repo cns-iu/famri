@@ -108,7 +108,7 @@ export class DatabaseService {
     return this.getPublications(filter).map((publications) => {
       const weights = sumAgg<Publication>(publications, 'subdisciplines', 'subd_id', 'weight');
       return Object.entries(weights).map(([k, v]) => <SubdisciplineWeight>{subd_id: <number>(<any>k), weight: v});
-    });
+    }).delay(1);
   }
 
   getDistinct(fieldName: string, filter: Partial<Filter> = {}): Observable<string[]> {
