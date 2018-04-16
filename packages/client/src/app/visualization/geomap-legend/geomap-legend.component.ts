@@ -26,7 +26,7 @@ export class GeomapLegendComponent implements OnInit {
         colors.push(hexColor);
       }
 
-      this.gradient = `linear-gradient(to right, ${colors.join(', ')})`;
+      this.gradient = `linear-gradient(to bottom, ${colors.join(', ')})`;
     });
   }
 }
