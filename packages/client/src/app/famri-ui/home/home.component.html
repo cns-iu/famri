@@ -20,7 +20,14 @@
   <mat-sidenav-content>
     <mat-tab-group #tabs>
       <mat-tab label="Co-author Network">
-        <famri-coauthor-network></famri-coauthor-network>
+        <famri-coauthor-network *ngIf="openState"
+          [width]="narrowWidth"
+          [height]="height">
+        </famri-coauthor-network>
+        <famri-coauthor-network *ngIf="!openState"
+          [width]="wideWidth"
+          [height]="height">
+        </famri-coauthor-network>
       </mat-tab>
       <mat-tab label="Science Map">
         <famri-science-map *ngIf="openState"

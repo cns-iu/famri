@@ -47,6 +47,7 @@
     "graphql-tag": "^2.6.1",
     "graphql-tools": "^2.23.1",
     "http": "^0.0.0",
+    "immutable": "^3.8.2",
     "mkdirp": "^0.5.1",
     "moment": "^2.20.0",
     "morgan": "^1.8.1",

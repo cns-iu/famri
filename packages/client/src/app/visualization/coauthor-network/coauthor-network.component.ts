@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input
+} from '@angular/core';
 
 @Component({
   selector: 'famri-coauthor-network',
@@ -6,6 +10,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./coauthor-network.component.sass']
 })
 export class CoauthorNetworkComponent implements OnInit {
+  @Input() width: number;
+  @Input() height: number;
 
   constructor() { }
 
