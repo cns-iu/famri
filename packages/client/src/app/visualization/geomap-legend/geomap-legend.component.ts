@@ -10,6 +10,8 @@ import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service'
 })
 export class GeomapLegendComponent implements OnInit {
   gradient = '';
+  medianCount: number;
+  maxCount: number;
 
   constructor(private service: GeomapDatabaseService) { }
 
@@ -27,6 +29,11 @@ export class GeomapLegendComponent implements OnInit {
       }
 
       this.gradient = `linear-gradient(to bottom, ${colors.join(', ')})`;
+    });
+
+    this.service.countsByState.subscribe(() => {
+      this.maxCount = this.service.maxCountRef.max;
+      this.medianCount = Math.floor(this.maxCount / 2);
     });
   }
 }
