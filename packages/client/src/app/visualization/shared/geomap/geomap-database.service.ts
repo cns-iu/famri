@@ -19,7 +19,7 @@ export class GeomapDatabaseService {
   private lastCounts: any[] = [];
   private lastGrants: Grant[] = [];
 
-  readonly maxCountRef = {max: 0};
+  readonly maxCountRef = {max: 1};
   readonly stateColorField = new Field<string>({
     id: 'scolor',
     label: 'State Color',

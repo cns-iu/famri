@@ -26,6 +26,7 @@ export class GeomapComponent implements OnInit, OnChanges {
   stateData = Observable.of();
   stateField: BoundField<string>;
   stateColorField: BoundField<string>;
+  stateDefaultColor: string;
 
   pointData: Observable<any>;
   pointIdField: BoundField<string>;
@@ -45,6 +46,7 @@ export class GeomapComponent implements OnInit, OnChanges {
     this.stateData = this.service.countsByState;
     this.stateField = Fields.stateField.getBoundField('default');
     this.stateColorField = this.service.stateColorField.getBoundField('gradient');
+    this.stateDefaultColor = this.service.gradient(0);
 
     this.pointData = this.service.filteredGrants;
     this.pointIdField = Fields.pointIdField.getBoundField('gid');
