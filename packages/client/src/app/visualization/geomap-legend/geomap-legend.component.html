@@ -1,5 +1,19 @@
-<div id="legend-container">
+<div class="legend-container">
+  <div class="gradient-title"><b># Grants By State</b></div>
   <div class="gradient-container">
-    <p class="gradient-bar" [style.background]="gradient"></p>
+    <div class="gradient-bar" [style.background]="gradient"></div>
+    <div class="gradient-labels">
+      <div>0 Grants</div>
+      <div class="gradient-label-filler"></div>
+      <div>{{medianCount}} Grants</div>
+      <div class="gradient-label-filler"></div>
+      <div>{{maxCount}} Grants</div>
+    </div>
   </div>
+
+  <br />
+  <science-map-size-legend [dataStream]="sizeValues"
+                           [sizeField]="sizeField"
+                           [title]="'TBD Grant Size Encoding'">
+  </science-map-size-legend>
 </div>

@@ -7,10 +7,7 @@ import {
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
-import {
-  FieldV2 as Field, BoundField, BoundFieldAdapter,
-  adaptBoundField
-} from '@ngx-dino/core';
+import { BoundField, adaptBoundField } from '@ngx-dino/core';
 import { Filter } from 'famri-database';
 
 import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service';

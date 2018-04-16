@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { DinoForceNetworkModule } from '@ngx-dino/force-network';
 import { DinoScienceMapModule } from '@ngx-dino/science-map';
-import { DinoGeomapModule } from '@ngx-dino/geomap';
 import { DinoScienceMapLegendModule } from '@ngx-dino/science-map-legend';
+import { DinoGeomapModule } from '@ngx-dino/geomap';
 
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
 import { ScienceMapComponent } from './science-map/science-map.component';
@@ -20,8 +20,8 @@ import { ScienceMapLegendComponent } from './science-map-legend/science-map-lege
 
     DinoForceNetworkModule,
     DinoScienceMapModule,
-    DinoGeomapModule,
-    DinoScienceMapLegendModule
+    DinoScienceMapLegendModule,
+    DinoGeomapModule
   ],
   exports: [
     CoauthorNetworkComponent,

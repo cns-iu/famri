@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { BoundField } from '@ngx-dino/core';
+
 import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service';
+import { pointSizeField } from '../shared/geomap/geomap-fields';
 
 
 @Component({
@@ -10,8 +13,15 @@ import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service'
 })
 export class GeomapLegendComponent implements OnInit {
   gradient = '';
+  medianCount: number;
+  maxCount: number;
 
-  constructor(private service: GeomapDatabaseService) { }
+  sizeField: BoundField<number>;
+  sizeValues: {weight: number}[];
+
+  constructor(private service: GeomapDatabaseService) {
+    this.sizeField = pointSizeField.getBoundField('fixed');
+  }
 
   ngOnInit() {
     this.service.fetchData().subscribe(() => {
@@ -27,6 +37,16 @@ export class GeomapLegendComponent implements OnInit {
       }
 
       this.gradient = `linear-gradient(to bottom, ${colors.join(', ')})`;
+    });
+
+    this.service.countsByState.subscribe(() => {
+      this.maxCount = this.service.maxCountRef.max;
+      this.medianCount = Math.floor(this.maxCount / 2);
+    });
+
+    this.service.filteredGrants.subscribe((grants) => {
+      this.sizeValues = grants.add.map(this.sizeField.operator.getter)
+        .map((weight) => ({weight}));
     });
   }
 }
