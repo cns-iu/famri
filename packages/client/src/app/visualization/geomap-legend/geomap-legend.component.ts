@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component, Input,
+  OnInit, OnChanges,
+  SimpleChanges
+} from '@angular/core';
 
 import { BoundField } from '@ngx-dino/core';
+import { Filter } from 'famri-database';
 
 import { GeomapDatabaseService } from '../shared/geomap/geomap-database.service';
 import { pointSizeField } from '../shared/geomap/geomap-fields';
@@ -11,7 +16,9 @@ import { pointSizeField } from '../shared/geomap/geomap-fields';
   templateUrl: './geomap-legend.component.html',
   styleUrls: ['./geomap-legend.component.sass']
 })
-export class GeomapLegendComponent implements OnInit {
+export class GeomapLegendComponent implements OnInit, OnChanges {
+  @Input() filter: Partial<Filter> = {};
+
   gradient = '';
   medianCount: number;
   maxCount: number;
@@ -24,7 +31,17 @@ export class GeomapLegendComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.fetchData().subscribe(() => {
+    this.update();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ('filter' in changes) {
+      this.update();
+    }
+  }
+
+  private update() {
+    this.service.fetchData(this.filter).subscribe(() => {
       const colors: string[] = [];
       for (let i = 0; i <= this.service.maxCountRef.max; ++i) {
         const color = this.service.gradient(i);
