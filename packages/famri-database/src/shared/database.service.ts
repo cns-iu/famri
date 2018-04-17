@@ -101,7 +101,14 @@ export class DatabaseService {
     }).delay(1);
   }
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
-    return Observable.of(this.db.publications);
+    if(filter.year) {
+      const filteredPublications = this.db.publications.filter((pubs: any) => {
+        return (pubs.year >= filter.year.start && pubs.year <= filter.year.end)? pubs: null;
+      });
+      return Observable.of(filteredPublications);
+    } else {
+      return Observable.of(this.db.publications);
+    }
   }
 
   getSubdisciplines(filter: Partial<Filter> = {}): Observable<SubdisciplineWeight[]> {
