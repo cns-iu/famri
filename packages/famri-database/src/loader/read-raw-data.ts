@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
 import { journalLookup, disciplineLookup } from './science-mapper';
 
-import { GRANTS_W_YR, GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
+import { GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
 
 function readXLS(inputFile: string, sheetName?: string): any[] {
   const wb = XLSX.readFile(inputFile);
@@ -70,12 +70,13 @@ function zip2state(field): Operator<string, string> {
     return latlon ? latlon.state : null;
   })
 }
+const zip2locationOp = Operator.map<string, any>((rawZip) => {
+  const zip = cleanZip(rawZip);
+  const latlon = zipcodes.lookup(zip) || zipcodes.lookup(rawZip);
+  return latlon ? latlon : null; // {zip, unmapped: true};
+});
 function zip2location(field): Operator<string, any> {
-  return a(field).map<any>((rawZip) => {
-    const zip = cleanZip(rawZip);
-    const latlon = zipcodes.lookup(zip) || zipcodes.lookup(rawZip);
-    return latlon ? latlon : null; // {zip, unmapped: true};
-  });
+  return a(field).chain(zip2locationOp);
 }
 function log<In, Out>(op: Operator<In, Out>, debug = true) {
   return !debug ? op : Operator.map<In, Out>((x: In) => {
@@ -91,43 +92,84 @@ const grantIdOp = log(Operator.map<string, string>((x) => parseInt((x || '').rep
 // const grantIdOp = log(Operator.map<string, string>((x) => (x || '').replace(/\_/g, '').trim().toUpperCase()), DEBUG);
 
 const grantsProcessor = Operator.combine({
-  'id': a('FAMRI ID number').chain(grantIdOp).map(Number),
-  'famri_id': a('FAMRI ID number'),
+  'id': n('ID'),
+  'famri_id': a('Reference No.'),
+  'ref_id': a('Reference No.').chain(grantIdOp).map(Number),
+  'title': a('Project Title'),
+  'year': a('Fiscal Year'),
+  'requestedDate': a('Request Date'),
+  'createdDate': a('Create Date'),
   'pi': {
-    'first_name': a('PI_First_ Name'),
-    'last_name': a('PI_Last_Name')
-  },
-  'title': a('Title'),
-  'initialZipCode': a('Initial Zip Code'),
-  'currentZipCode': a('Current Zip Code'),
+    'id': n('Primary Contact ID'),
+    'name': a('Primary Contact'),
+    'firstName': a('First Name'),
+    'middleName': a('Middle Name'),
+    'lastName': a('Last Name'),
+    'totalActivities': n('Primary Contact Total Number of Activities'),
+    'totalAffiliations': n('Primary Contact Total Number of Affiliations'),
 
-  'initialLocation': zip2location('Initial Zip Code'),
-  'currentLocation': zip2location('Current Zip Code'),
+    'enteredLocation': {
+      'state': [
+        a('Primary Contact State'),
+        a('Home Address State'),
+        a('Alternate Address State')
+      ],
+      'zipcode': [
+        a('Primary Contact Postal Code'),
+        a('Home Address Postal Code'),
+        a('Alternate Address Postal Code')
+      ]
+    },
+    'location': zip2location('Primary Contact Postal Code')
+  },
+  'piType': a('Primary Contact Type'),
+  'institution': {
+    'id': n('Organization ID'),
+    'name': a('Name'),
+    'parentName': a('Parent Organization Name'),
+    'isCharitableOrganization': a('Charitable Organization'),
+    'totalActivities': n('Organization Total Number of Activities'),
+    'totalAffiliations': n('Organization Total Number of Affiliations'),
+    'totalRequests': n('Organization Total Number of Requests'),
+
+    'enteredLocation': {
+      'city': a('City'),
+      'state': a('State'),
+      'country': a('Country'),
+      'zipcode': a('Postal Code')
+    },
+    'location': zip2location('Postal Code')
+  },
+  'type': a('Type'),
+  'status': a('Status'),
+  'fund': a('Fund'),
+  'geographicAreaServed': a('Geographical Area Served'),
+  'programArea': a('Program Area'),
+
+  'location': zip2location('Postal Code')
 });
 let grants: any[] = readXLS(GRANTS).map(grantsProcessor.getter);
 let grantsMap: any = {};
 grants.forEach((grant) => {
-  if (grant.initialLocation && !grant.currentLocation) {
-    grant.initialLocation = grant.currentLocation;
+  for (const zipcode of grant.pi.enteredLocation.zipcode) {
+    const location = zip2locationOp.get(zipcode);
+    if (location) {
+      grant.pi.location = location;
+      grant.pi.enteredLocation.zipcode = zipcode;
+      break;
+    }
   }
-  grantsMap[grant.id] = grant;
-});
-
-const grantsWithYearProcessor = Operator.combine({
-  'id': a('FAMRI grant number').chain(grantIdOp).map(Number),
-  'famri_id': a('FAMRI grant number'),
-  'institution': a('Institution '),
-  'year': n('Year')
-}).map((g) => {
-  const grant = grantsMap[g.id];
-  if (grant) {
-    grant.year = g.year;
-    grant.institution = g.institution;
+  for (const state of grant.pi.enteredLocation.state) {
+    if (state) {
+      grant.pi.enteredLocation.state = state;
+      break;
+    }
   }
-  return grant;
+  if (!grant.location && grant.pi.location) {
+    grant.location = grant.pi.location;
+  }
+  grantsMap[grant.ref_id] = grant;
 });
-readXLS(GRANTS_W_YR).forEach(grantsWithYearProcessor.getter);
-grants = grants.filter(g => !!g.year);
 
 const pubsProcessor = Operator.combine({
   'id': n('recNumber'),
@@ -163,13 +205,13 @@ pubs.forEach((p) => {
   pubsMap[id] = p;
 });
 
-const uglyPubsProcessor = Operator.combine({
+const grantPubsProcessor = Operator.combine({
   'id': a('Grant number').chain(grantIdOp),
   'famri_id': a('Grant number'),
   'grant': Operator.map((s) => grantIdOp.get(s['Grant number'])).lookup(grantsMap),
   'citation': a('Publications')
 });
-const grantPubs = readXLS(PUBS).map(uglyPubsProcessor.getter).filter((p: any) => p.grant);
+const grantPubs = readXLS(PUBS).map(grantPubsProcessor.getter).filter((p: any) => p.grant);
 
 const mappedPubs = grantPubs.map((gp: any) => {
   const cite = gp.citation.split(/\./g);
@@ -222,8 +264,11 @@ const pubsDBProcessor = Operator.combine({
   'subdisciplines': a('subdisciplines')
 });
 let publications = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0).map(pubsDBProcessor.getter);
-console.log(pubs.length, pubs.filter((p: any) => !!p.grant_id).length);
-console.log(publications.length, publications.filter((p: any) => !!p.grantId).length);
+
+console.log('Grants (orig -> w/ location):', grants.length, grants.filter((g) => !!g.location).length);
+console.log('Raw Pubs (orig -> w/ grant):', pubs.length, pubs.filter((p: any) => !!p.grant_id).length);
+console.log('Sci-Mapped Pubs (sci-mapped -> w/ grant):', publications.length, publications.filter((p: any) => !!p.grantId).length);
+
 publications = publications.filter((p: any) => !!p.grantId);
 
 const db: any = {
