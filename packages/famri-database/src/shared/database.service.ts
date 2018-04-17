@@ -94,7 +94,11 @@ export class DatabaseService {
     return Observable.of(this.db.coauthors);
   }
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
-    return Observable.of(this.db.grants).delay(1);
+    return Observable.of(this.db.grants).map((grants) => {
+      return !filter.year ? grants : grants.filter((g) => {
+        return filter.year.start <= g.year && g.year <= filter.year.end;
+      });
+    }).delay(1);
   }
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
     return Observable.of(this.db.publications);
