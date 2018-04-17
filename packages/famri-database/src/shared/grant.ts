@@ -1,3 +1,5 @@
+import { Publication } from './publication';
+
 export interface Location {
   zip: string;
   latitude: string;
@@ -24,4 +26,5 @@ export interface Grant {
   currentLocation?: Location;
 
   publicationIds?: number[];
+  publications?: Publication[];
 }
