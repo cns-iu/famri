@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
   narrowWidth = window.innerWidth - 340;
   wideWidth = window.innerWidth;
-  height = window.innerHeight - 110;
+  height = window.innerHeight - 130;
 
   constructor() { }
 

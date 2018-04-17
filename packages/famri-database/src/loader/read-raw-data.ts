@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
 import { journalLookup, disciplineLookup } from './science-mapper';
 
-import { GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
+import { GRANTS_W_YR, GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
 
 function readXLS(inputFile: string, sheetName?: string): any[] {
   const wb = XLSX.readFile(inputFile);
@@ -78,8 +78,17 @@ function zip2location(field): Operator<string, any> {
   });
 }
 
+function log(s) {
+  console.log(s);
+  return s;
+}
+// const grantIdOp = Operator.map<string, string>((x) => log(x).replace(/[^0-9]/g,''));
+const grantIdOp = Operator.map<string, string>((x) => x.replace(/[^0-9]/g, ''));
+// const grantIdOp = Operator.map<string, string>((x) => log(log(x).replace(/\_/g, '').trim().toUpperCase()));
+
 const grantsProcessor = Operator.combine({
-  'id': a('FAMRI ID number'),
+  'id': a('FAMRI ID number').chain(grantIdOp),
+  'famri_id': a('FAMRI ID number'),
   'pi': {
     'first_name': a('PI_First_ Name'),
     'last_name': a('PI_Last_Name')
@@ -99,6 +108,22 @@ grants.forEach((grant) => {
   }
   grantsMap[grant.id] = grant;
 });
+
+const grantsWithYearProcessor = Operator.combine({
+  'famri_id': a('FAMRI grant number'),
+  'institution': a('Institution '),
+  'year': a('Year'),
+  'grant': Operator.map((s) => grantIdOp.get(s['FAMRI grant number'])).lookup(grantsMap)
+  // 'grant': Operator.access('FAMRI grant number', 'BAD BAD MAN').chain(grantIdOp).lookup(grantsMap)
+}).map((g) => {
+  if (g.grant) {
+    g.grant.year = g.year;
+    g.grant.institution = g.institution;
+  }
+  return g.grant ? undefined : g.grant;
+});
+readXLS(GRANTS_W_YR).forEach(grantsWithYearProcessor.getter);
+grants = grants.filter(g => !!g.year);
 
 const pubsProcessor = Operator.combine({
   'id': n('recNumber'),
