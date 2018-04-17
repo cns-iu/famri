@@ -13,7 +13,7 @@ import { Filter } from 'famri-database';
 })
 export class HomeComponent implements OnInit {
   @ViewChild('tabs') tabs: MatTabGroup;
-  tabIndex: number = 0;
+  tabIndex = 0;
 
   filter: Partial<Filter> = {};
   filtersUpdating = false;

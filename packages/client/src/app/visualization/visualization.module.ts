@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { NouisliderModule } from 'ng2-nouislider';
+
 import { DinoForceNetworkModule } from '@ngx-dino/force-network';
 import { DinoScienceMapModule } from '@ngx-dino/science-map';
 import { DinoScienceMapLegendModule } from '@ngx-dino/science-map-legend';
@@ -14,10 +16,14 @@ import { GeomapComponent } from './geomap/geomap.component';
 import { GeomapLegendComponent } from './geomap-legend/geomap-legend.component';
 import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
 import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
+import { FilterComponent } from './filter/filter.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   imports: [
     CommonModule,
+
+    NouisliderModule,
 
     DinoForceNetworkModule,
     DinoScienceMapModule,
@@ -26,19 +32,31 @@ import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauth
   ],
   exports: [
     CoauthorNetworkComponent,
+    CoauthorNetworkLegendComponent,
+
     ScienceMapComponent,
+    ScienceMapLegendComponent,
+
     GeomapComponent,
     GeomapLegendComponent,
-    ScienceMapLegendComponent,
-    CoauthorNetworkLegendComponent
+
+    StatisticsComponent,
+
+    FilterComponent
   ],
   declarations: [
     CoauthorNetworkComponent,
+    CoauthorNetworkLegendComponent,
+
     ScienceMapComponent,
+    ScienceMapLegendComponent,
+
     GeomapComponent,
     GeomapLegendComponent,
-    ScienceMapLegendComponent,
-    CoauthorNetworkLegendComponent
+
+    StatisticsComponent,
+
+    FilterComponent
   ],
   providers: [GeomapDatabaseService]
 })
