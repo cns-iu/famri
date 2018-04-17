@@ -17,6 +17,7 @@ import { GeomapLegendComponent } from './geomap-legend/geomap-legend.component';
 import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
 import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
 import { FilterComponent } from './filter/filter.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   imports: [
@@ -39,6 +40,8 @@ import { FilterComponent } from './filter/filter.component';
     GeomapComponent,
     GeomapLegendComponent,
 
+    StatisticsComponent,
+
     FilterComponent
   ],
   declarations: [
@@ -50,6 +53,8 @@ import { FilterComponent } from './filter/filter.component';
 
     GeomapComponent,
     GeomapLegendComponent,
+
+    StatisticsComponent,
 
     FilterComponent
   ],
