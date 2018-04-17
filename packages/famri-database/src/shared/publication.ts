@@ -9,4 +9,6 @@ export interface Publication {
   journalName: string;
   journalId: number;
   subdisciplines: SubdisciplineWeight[];
+
+  grantId: number;
 }

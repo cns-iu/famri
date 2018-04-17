@@ -12,7 +12,7 @@ import { Author, CoAuthorEdge } from '../shared/author';
 import { Grant } from '../shared/grant';
 
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
-import * as database from '../../../../raw-data/database.json';
+import { database } from './database';
 
 function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueField: string): Promise<{[key: string]: number}> {
   const acc: any = {};
@@ -30,20 +30,16 @@ function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueFiel
   return acc;
 }
 
-const grants: Grant[] = database.grants;
-const publications: Publication[] = database.publications;
-const authors: Author[] = [];
-const coauthors: CoAuthorEdge[] = [];
-
 @Injectable()
 export class DatabaseService {
+  db = database;
 
   constructor() { }
 
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
     const fullAuthors = Map<string, Author>().asMutable();
     const coAuthors = Map<Author, Set<string>>().asMutable();
-    const filteredByYear = publications.filter(
+    const filteredByYear = this.db.publications.filter(
       (pubs) => pubs.year > filter.year.start && pubs.year < filter.year.end
     );
 
@@ -77,31 +73,31 @@ export class DatabaseService {
             author2: fullAuthors.get(element),
             count: 0,
             countsByYear: undefined
-          };  
+          };
           tmpCoauthors.push(tempEntry);
         }
       });
     });
 
     for (let i = 0; i < tmpAuthors.length; ++i) {
-      authors.push(tmpAuthors[i]);
+      this.db.authors.push(tmpAuthors[i]);
     }
-    
+
     for (let i = 0; i < tmpCoauthors.length; ++i) {
-      coauthors.push(tmpCoauthors[i]);
+      this.db.coauthors.push(tmpCoauthors[i]);
     }
-  
-    return Observable.of(authors);
+
+    return Observable.of(this.db.authors);
   }
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
     this.getAuthors(filter);
-    return Observable.of(coauthors);
+    return Observable.of(this.db.coauthors);
   }
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
-    return Observable.of(grants).delay(1);
+    return Observable.of(this.db.grants).delay(1);
   }
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
-    return Observable.of(publications);
+    return Observable.of(this.db.publications);
   }
 
   getSubdisciplines(filter: Partial<Filter> = {}): Observable<SubdisciplineWeight[]> {

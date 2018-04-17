@@ -77,17 +77,21 @@ function zip2location(field): Operator<string, any> {
     return latlon ? latlon : null; // {zip, unmapped: true};
   });
 }
-
-function log(s) {
-  console.log(s);
-  return s;
+function log<In, Out>(op: Operator<In, Out>, debug = true) {
+  return !debug ? op : Operator.map<In, Out>((x: In) => {
+    console.log(x);
+    const y = op.get(x);
+    console.log(y);
+    return y;
+  });
 }
-// const grantIdOp = Operator.map<string, string>((x) => log(x).replace(/[^0-9]/g,''));
-const grantIdOp = Operator.map<string, string>((x) => x.replace(/[^0-9]/g, ''));
-// const grantIdOp = Operator.map<string, string>((x) => log(log(x).replace(/\_/g, '').trim().toUpperCase()));
+
+const DEBUG = false;
+const grantIdOp = log(Operator.map<string, string>((x) => parseInt((x || '').replace(/[^0-9]/g, ''), 10).toString()), DEBUG);
+// const grantIdOp = log(Operator.map<string, string>((x) => (x || '').replace(/\_/g, '').trim().toUpperCase()), DEBUG);
 
 const grantsProcessor = Operator.combine({
-  'id': a('FAMRI ID number').chain(grantIdOp),
+  'id': a('FAMRI ID number').chain(grantIdOp).map(Number),
   'famri_id': a('FAMRI ID number'),
   'pi': {
     'first_name': a('PI_First_ Name'),
@@ -110,17 +114,17 @@ grants.forEach((grant) => {
 });
 
 const grantsWithYearProcessor = Operator.combine({
+  'id': a('FAMRI grant number').chain(grantIdOp).map(Number),
   'famri_id': a('FAMRI grant number'),
   'institution': a('Institution '),
-  'year': a('Year'),
-  'grant': Operator.map((s) => grantIdOp.get(s['FAMRI grant number'])).lookup(grantsMap)
-  // 'grant': Operator.access('FAMRI grant number', 'BAD BAD MAN').chain(grantIdOp).lookup(grantsMap)
+  'year': n('Year')
 }).map((g) => {
-  if (g.grant) {
-    g.grant.year = g.year;
-    g.grant.institution = g.institution;
+  const grant = grantsMap[g.id];
+  if (grant) {
+    grant.year = g.year;
+    grant.institution = g.institution;
   }
-  return g.grant ? undefined : g.grant;
+  return grant;
 });
 readXLS(GRANTS_W_YR).forEach(grantsWithYearProcessor.getter);
 grants = grants.filter(g => !!g.year);
@@ -145,6 +149,46 @@ const pubsProcessor = Operator.combine({
   // 'grant': a('File Reference').lookup(grantsMap),
 });
 const pubs: any[] = readJSON(CLEAN_PUBS).map(pubsProcessor.getter);
+
+function normalizeCitation(p: {title: string, author: string, journalName: string, pages: string}): string {
+  p.author = p.author.replace(/\./g,'');
+  // return `${p.title} - ${p.author} - ${p.journalName} - ${p.pages}`;
+  const id = `${p.title} - ${p.author}`;
+  return id.toLowerCase().replace(/[^a-z0-9\ ]/g,'').replace(/\ +/g, '').trim();
+}
+
+const pubsMap = {};
+pubs.forEach((p) => {
+  const id = normalizeCitation({title: p.title, author: p.authors[0], journalName: p.journalName, pages: p.pages});
+  pubsMap[id] = p;
+});
+
+const uglyPubsProcessor = Operator.combine({
+  'id': a('Grant number').chain(grantIdOp),
+  'famri_id': a('Grant number'),
+  'grant': Operator.map((s) => grantIdOp.get(s['Grant number'])).lookup(grantsMap),
+  'citation': a('Publications')
+});
+const grantPubs = readXLS(PUBS).map(uglyPubsProcessor.getter).filter((p: any) => p.grant);
+
+const mappedPubs = grantPubs.map((gp: any) => {
+  const cite = gp.citation.split(/\./g);
+  const id = normalizeCitation({
+    title: cite[1].trim(),
+    author: cite[0].split(/\,/g)[0].trim(),
+    journalName: cite[2],
+    pages: cite.slice(2,3).join('').split(':').slice(-1)[0]
+  });
+
+  const pub = pubsMap[id];
+  if (pub) {
+    pub.famri_id = gp.famri_id;
+    pub.grant_id = gp.id;
+    pub.grant = gp.grant;
+    gp.grant.publicationIds = (gp.grant.publicationIds || []).concat([pub.id]);
+  }
+  return pub || undefined;
+}).filter(p => !!p);
 
 let journal2weights: any = {};
 let journal2journ_id: any = {};
@@ -171,12 +215,16 @@ const pubsDBProcessor = Operator.combine({
   'title': a('title'),
   'authors': a('authors'),
   'year': n('year'),
+  'grantId': n('grant_id'),
 
   'journalName': a('journalName'),
   'journalId': a('journ_id'),
   'subdisciplines': a('subdisciplines')
 });
-const publications = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0).map(pubsDBProcessor.getter);
+let publications = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0).map(pubsDBProcessor.getter);
+console.log(pubs.length, pubs.filter((p: any) => !!p.grant_id).length);
+console.log(publications.length, publications.filter((p: any) => !!p.grantId).length);
+publications = publications.filter((p: any) => !!p.grantId);
 
 const db: any = {
   publications,
