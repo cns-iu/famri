@@ -13,6 +13,7 @@ import { GeomapDatabaseService } from './shared/geomap/geomap-database.service';
 import { GeomapComponent } from './geomap/geomap.component';
 import { GeomapLegendComponent } from './geomap-legend/geomap-legend.component';
 import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
+import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
 
 @NgModule({
   imports: [
@@ -28,14 +29,16 @@ import { ScienceMapLegendComponent } from './science-map-legend/science-map-lege
     ScienceMapComponent,
     GeomapComponent,
     GeomapLegendComponent,
-    ScienceMapLegendComponent
+    ScienceMapLegendComponent,
+    CoauthorNetworkLegendComponent
   ],
   declarations: [
     CoauthorNetworkComponent,
     ScienceMapComponent,
     GeomapComponent,
     GeomapLegendComponent,
-    ScienceMapLegendComponent
+    ScienceMapLegendComponent,
+    CoauthorNetworkLegendComponent
   ],
   providers: [GeomapDatabaseService]
 })
