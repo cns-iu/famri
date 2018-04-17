@@ -50,7 +50,7 @@ export class GeomapComponent implements OnInit, OnChanges {
 
     this.pointData = this.service.filteredGrants;
     this.pointIdField = Fields.pointIdField.getBoundField('gid');
-    this.pointPositionField = Fields.pointPositionField.getBoundField('current');
+    this.pointPositionField = Fields.pointPositionField.getBoundField('default');
     this.pointShapeField = Fields.pointShapeField.getBoundField('circle');
     this.pointSizeField = Fields.pointSizeField.getBoundField('fixed');
     this.pointColorField = Fields.pointColorField.getBoundField('fixed');

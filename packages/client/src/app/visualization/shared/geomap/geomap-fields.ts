@@ -32,6 +32,9 @@ export const pointPositionField = new Field<[number, number]>({
   label: 'Point Latitude and Longitude',
 
   mapping: {
+    default: Operator.access('pi.location')
+      .map((o) => o || invalidLatLongObj)
+      .map(({latitude, longitude}): [number, number] => [latitude, longitude]),
     initial: Operator.access('initialLocation')
       .map((o) => o || invalidLatLongObj)
       .map(({latitude, longitude}): [number, number] => [latitude, longitude]),

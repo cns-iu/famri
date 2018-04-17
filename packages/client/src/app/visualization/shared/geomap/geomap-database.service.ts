@@ -31,6 +31,14 @@ export class GeomapDatabaseService {
     }
   });
 
+  readonly locationState = new Field<string>({
+    id: 'lstate',
+    label: 'Location State',
+
+    initialOp: Operator.access('institution.enteredLocation.state'),
+    mapping: {default: true}
+  });
+
   readonly countsByState = new EventEmitter<Changes<{state: string, count: number}>>();
   readonly filteredGrants = new EventEmitter<Changes<Grant>>();
 
@@ -58,13 +66,14 @@ export class GeomapDatabaseService {
   }
 
   private processStateData(grants: Grant[]): void {
+    const field = this.locationState.getBoundField('default');
     const acc: {[state: string]: number} = {};
     const result = [];
     let max = 0;
 
     for (const g of grants) {
-      if (g.currentLocation) {
-        const state = g.currentLocation.state;
+      const state = field.get(g);
+      if (state !== undefined) {
         acc[state] = (acc[state] || 0) + 1;
       }
     }
