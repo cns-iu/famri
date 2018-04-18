@@ -31,6 +31,15 @@ const nameTableExtractor = Operator.combine<any, [string, NameTableValue]>([
   }
 ]);
 
+const issnTableName = 'Table 5';
+const issnTableStart = 'A13';
+const issnTableExtractor = Operator.combine<any, [string, NameTableValue]>([
+  Operator.access('ISSN').map(normalizeIssn),
+  {
+    id: Operator.access('journ_id').map(Number)
+  }
+]);
+
 const idTableName = 'Table 4';
 const idTableStart = 'A13';
 const idTableExtractor = Operator.combine<any, [number, IdTableValue]>([
@@ -47,6 +56,9 @@ const idTableExtractor = Operator.combine<any, [number, IdTableValue]>([
 let rawNameTable: libXLSX.WorkSheet;
 let nameTable: Map<string, NameTableValue>;
 
+let rawIssnTable: libXLSX.WorkSheet;
+let issnTable: Map<string, NameTableValue>;
+
 let rawIdTable: libXLSX.WorkSheet;
 let idTable: Map<number, IdTableValue[]>;
 
@@ -56,6 +68,7 @@ function loadRawTables(): void {
   const workbook = libXLSX.readFile(mapperFilePath);
 
   rawNameTable = workbook.Sheets[nameTableName];
+  rawIssnTable = workbook.Sheets[issnTableName];
   rawIdTable = workbook.Sheets[idTableName];
 }
 
@@ -68,6 +81,17 @@ function loadNameTable(): void {
 
   nameTable = parse(rawNameTable, nameTableStart, nameTableExtractor);
   rawNameTable = undefined;
+}
+
+function loadIssnTable(): void {
+  if (issnTable !== undefined) {
+    return;
+  } else if (rawIssnTable === undefined) {
+    loadRawTables();
+  }
+
+  issnTable = parse(rawIssnTable, issnTableStart, issnTableExtractor);
+  rawIssnTable = undefined;
 }
 
 function loadIdTable(): void {
@@ -108,14 +132,32 @@ function parse2<K, V>(
 
 
 // Exported api
+export const journalExpansions = {
+  'of': ' ',
+  'the': ' ',
+  'on': ' ',
+  'and': ' ',
+  '&': ' '
+}
 export function normalizeName(name: string): string {
-  return String(name).replace(/[^\w\s]/g, '').replace(/\s+/g, ' ')
-    .split(/\s/).filter((str) => str.length !== 0).join(' ').toLowerCase();
+  return String(name).toLowerCase()
+    .replace(/[^\w\s]/g, '').replace(/\s+/g, ' ')
+    .split(/\s/).map(s => (journalExpansions[s] || s).trim())
+    .filter((str) => str.length !== 0).join(' ')
+}
+
+export function normalizeIssn(name: string): string {
+  return (name || '').replace(/\-/g, '');
 }
 
 export function getNameTable(): Map<string, NameTableValue> {
   loadNameTable();
   return nameTable;
+}
+
+export function getIssnTable(): Map<string, NameTableValue> {
+  loadIssnTable();
+  return issnTable;
 }
 
 export function getIdTable(): Map<number, IdTableValue[]> {

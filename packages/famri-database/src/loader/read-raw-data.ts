@@ -3,7 +3,7 @@ const zipcodes = require('zipcodes');
 
 import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
-import { journalLookup, disciplineLookup } from './science-mapper';
+import { issnLookup, journalLookup, disciplineLookup } from './science-mapper';
 
 import { GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
 
@@ -89,7 +89,7 @@ function log<In, Out>(op: Operator<In, Out>, debug = true) {
 
 const DEBUG = false;
 const grantIdOp = log(Operator.map<string, string>((x) => parseInt((x || '').replace(/[^0-9]/g, ''), 10).toString()), DEBUG);
-// const grantIdOp = log(Operator.map<string, string>((x) => (x || '').replace(/\_/g, '').trim().toUpperCase()), DEBUG);
+// const grantIdOp = log(Operator.map<string, string>((x) => (x || '').replace(/[^0-9a-zA-Z]/g, '').toLowerCase().replace('distprof','')), DEBUG);
 
 const grantsProcessor = Operator.combine({
   'id': n('ID'),
@@ -186,9 +186,6 @@ const pubsProcessor = Operator.combine({
   'date': a('date'),
   'keywords': a('keywords'),
   'urls': a('urls')
-
-  // 'grant_id': a('FAMRI ID number'),
-  // 'grant': a('File Reference').lookup(grantsMap),
 });
 const pubs: any[] = readJSON(CLEAN_PUBS).map(pubsProcessor.getter);
 
@@ -232,25 +229,63 @@ const mappedPubs = grantPubs.map((gp: any) => {
   return pub || undefined;
 }).filter(p => !!p);
 
+const journalReplacements = {
+  'Am J Respir Cell Mol Biol': 'American Journal Of Physiology - Lung Cellular And Molecular Physiology',
+  'Am J Physiol Lung Cell Mol Physiol': 'American Journal Of Physiology - Lung Cellular And Molecular Physiology',
+  'J Biol Chem': 'Journal Of Biological Chemistry',
+  'Am J Respir Crit Care Med': 'American Journal Of Respiratory And Critical Care Medicine',
+  'J Immunol': 'Journal Of Immunology',
+  'Proc Natl Acad Sci U S A': 'Proceedings Of The National Academy Of Sciences Of The United States Of America',
+  'Int J Cancer': 'International Journal Of Cancer',
+  'Cancer Biol Ther': 'Cancer Biology & Therapy',
+  'Am J Prev Med': 'American Journal Of Preventive Medicine',
+  'Mol Cell Biol': 'Molecular Cell Biology Research Communications',
+  'Am J Rhinol Allergy': 'AMERICAN JOURNAL OF RHINOLOGY & ALLERGY',
+  'Oncotarget': 'Targeted Oncology',
+  'COPD': 'COPD: Journal of Chronic Obstructive Pulmonary Disease',
+  'Cancer Prev Res (Phila)': 'CANCER PREVENTION RESEARCH'
+}
+
+let badJournals: any = {};
 let journal2weights: any = {};
 let journal2journ_id: any = {};
 pubs.forEach((pub) => {
-  const journal = pub.journalName;
-  if (!journal2journ_id.hasOwnProperty(journal)) {
-    pub.journ_id = journal2journ_id[journal] = journalLookup.access('id').get(journal);
-    if (pub.journ_id) {
-      journal2weights[pub.journ_id] = disciplineLookup.get(pub.journ_id);
-    } else {
-      pub.journ_id = undefined;
-    }
+  const journal = journalReplacements[pub.journalName] || pub.journalName;
+  const isbn = (pub.isbn || '').trim().split(/\s+/g).map(s => issnLookup.access('id').get(s)).filter(s => !!s);
+  if (isbn.length > 0) {
+    pub.journ_id = isbn[0];
+    journal2weights[pub.journ_id] = disciplineLookup.get(pub.journ_id);
   } else {
-    pub.journ_id = journal2journ_id[journal];
+    pub.journ_id = undefined;
   }
-  pub.subdisciplines = journal2weights[pub.journ_id] || undefined;
+  if (!pub.journ_id) {
+    if (!journal2journ_id.hasOwnProperty(journal)) {
+      pub.journ_id = journal2journ_id[journal] = journalLookup.access('id').get(journal);
+      if (pub.journ_id) {
+        journal2weights[pub.journ_id] = disciplineLookup.get(pub.journ_id);
+      } else {
+        pub.journ_id = undefined;
+      }
+    } else {
+      pub.journ_id = journal2journ_id[journal];
+    }
+  }
+  if (!pub.journ_id) {
+    badJournals[`${pub.journalName}`] = (badJournals[`${pub.journalName}`] || 0) + 1;
+  }
+
+  pub.subdisciplines = journal2weights[pub.journ_id] || [];
 });
 
 journal2journ_id = null;
 journal2weights = null;
+
+const WRITE_BAD_JOURNALS = true;
+if (WRITE_BAD_JOURNALS) {
+  badJournals = Object.entries(badJournals);
+  badJournals.sort((a,b) => b[1] - a[1]);
+  fs.writeFileSync('/tmp/bad.csv', badJournals.map(t => t.join(',')).join('\n'), 'utf8');
+}
 
 const pubsDBProcessor = Operator.combine({
   'id': a('id'),
@@ -263,13 +298,23 @@ const pubsDBProcessor = Operator.combine({
   'journalId': a('journ_id'),
   'subdisciplines': a('subdisciplines')
 });
-let publications = pubs.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0).map(pubsDBProcessor.getter);
+const publications: any[] = pubs.map(pubsDBProcessor.getter);
 
-console.log('Grants (orig -> w/ location):', grants.length, grants.filter((g) => !!g.location).length);
-console.log('Raw Pubs (orig -> w/ grant):', pubs.length, pubs.filter((p: any) => !!p.grant_id).length);
-console.log('Sci-Mapped Pubs (sci-mapped -> w/ grant):', publications.length, publications.filter((p: any) => !!p.grantId).length);
-
-publications = publications.filter((p: any) => !!p.grantId);
+const PRINT_INFO = true;
+if (PRINT_INFO) {
+  const sciPubs = publications.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0);
+  console.log('\nDEBUG INFO:\nGrants (orig -> w/ location):', grants.length, grants.filter((g) => !!g.location).length);
+  console.log('Raw Pubs (orig -> w/ grant):', publications.length, publications.filter((p: any) => !!p.grantId).length);
+  console.log('Sci-Mapped Pubs (sci-mapped -> w/ grant):', sciPubs.length, sciPubs.filter((p: any) => !!p.grantId).length);
+  console.log('% Sci-Mapped, # unmapped, % Sci-Mapped w/ grant, # unmapped w/ grant: ')
+  console.log(
+    sciPubs.length / publications.length * 100,
+    publications.length - sciPubs.length,
+    sciPubs.filter((p: any) => !!p.grantId).length / publications.filter((p: any) => !!p.grantId).length * 100,
+    publications.filter((p: any) => !!p.grantId).length - sciPubs.filter((p: any) => !!p.grantId).length
+  );
+  console.log('Publications:', publications.length, 'Grants:', grants.length);
+}
 
 const db: any = {
   publications,
@@ -277,11 +322,3 @@ const db: any = {
 };
 
 writeJSON(DB_JSON, db);
-// writeJSONArray(DB_JSON, mappedPubs, pubsDBProcessor);
-
-// console.log(grants.length);
-// console.log(JSON.stringify(grants[0]));
-// console.log(pubs.length);
-// console.log(JSON.stringify(pubs[0]));
-//
-// writeJSON(DB_JSON, pubs);
