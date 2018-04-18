@@ -53,7 +53,10 @@
         </famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
-        <famri-geomap [width]="openState ? narrowWidth : wideWidth" [height]="height"></famri-geomap>
+        <famri-geomap [width]="openState ? narrowWidth : wideWidth"
+                      [height]="height"
+                      [filter]="filter">
+        </famri-geomap>
       </mat-tab>
       <mat-tab label="Statistics">
         <famri-statistics [filter]="filter"></famri-statistics>

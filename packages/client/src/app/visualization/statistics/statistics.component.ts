@@ -7,6 +7,7 @@ import {
 import { Filter } from 'famri-database';
 
 import { Statistics } from '../shared/statistics/statistics';
+import { AuthorsByYearFields } from '../shared/statistics/statistics-fields';
 import { StatisticsService } from '../shared/statistics/statistics.service';
 
 
@@ -19,6 +20,11 @@ export class StatisticsComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};
 
   statistics: Statistics = {} as Statistics;
+
+  nAuthorsByYearFields = [
+    AuthorsByYearFields.yearField.getBoundField('default'),
+    AuthorsByYearFields.authorCountField.getBoundField('default')
+  ];
 
   constructor(private service: StatisticsService) {
     service.statistics.subscribe((s) => (this.statistics = s));

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { NouisliderModule } from 'ng2-nouislider';
 
+import { DinoDatatableModule } from '@ngx-dino/datatable';
 import { DinoForceNetworkModule } from '@ngx-dino/force-network';
 import { DinoScienceMapModule } from '@ngx-dino/science-map';
 import { DinoScienceMapLegendModule } from '@ngx-dino/science-map-legend';
@@ -33,6 +34,7 @@ import { FilterComponent } from './filter/filter.component';
 
     NouisliderModule,
 
+    DinoDatatableModule,
     DinoForceNetworkModule,
     DinoScienceMapModule,
     DinoScienceMapLegendModule,

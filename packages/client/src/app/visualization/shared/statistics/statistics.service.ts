@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/combineLatest';
 
+import { Map, Set } from 'immutable';
+
 import {
   DatabaseService, Filter,
   Author, CoAuthorEdge, Grant, Publication
@@ -49,6 +51,19 @@ export class StatisticsService {
 
     result.nPublications = publications.length;
     result.nAuthors = authors.length;
+
+    // nAuthorsByYear
+    const authorsByYear = Map<number, Set<string>>().withMutations((map) => {
+      publications.forEach((pub) => {
+        map.updateIn([pub.year], (set: Set<String> = Set()) => {
+          return set.union(pub.authors);
+        });
+      });
+    });
+
+    result.nAuthorsByYear = authorsByYear.entrySeq().map(([year, set]) => {
+      return {year, count: set.size};
+    }).toArray().sort((a, b) => a.year - b.year);
 
     // TODO
     return result;
