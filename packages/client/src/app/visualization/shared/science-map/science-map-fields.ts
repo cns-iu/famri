@@ -3,7 +3,7 @@ import '@ngx-dino/core/src/operators/add/static/access';
 
 
 export const subdisciplineSizeField = new Field<string>({
-  id: '1',
+  id: 'subdisciplineSize',
   label: 'Subdiscipline Size',
 
   initialOp: Operator.access('weight'),
@@ -13,7 +13,7 @@ export const subdisciplineSizeField = new Field<string>({
 });
 
 export const subdisciplineIDField = new Field<number|string>({
-  id: '1',
+  id: 'subdisciplineID',
   label: 'Subdiscipline ID',
 
   initialOp: Operator.access('subd_id'),

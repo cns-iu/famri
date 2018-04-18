@@ -29,11 +29,13 @@
       <mat-tab label="Co-author Network">
         <famri-coauthor-network *ngIf="openState"
           [width]="narrowWidth"
-          [height]="height">
+          [height]="height"
+          [filter]="filter">
         </famri-coauthor-network>
         <famri-coauthor-network *ngIf="!openState"
           [width]="wideWidth"
-          [height]="height">
+          [height]="height"
+          [filter]="filter">
         </famri-coauthor-network>
       </mat-tab>
       <mat-tab label="Science Map">

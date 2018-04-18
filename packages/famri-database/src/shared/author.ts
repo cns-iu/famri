@@ -1,6 +1,6 @@
 
 export interface Author {
-  name: string;
+  id: string;
   paperCount: number;
   coauthorCount: number;
 
