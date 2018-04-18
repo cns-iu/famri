@@ -11,7 +11,13 @@ import {
 import { BoundField } from '@ngx-dino/core';
 import { Author, Filter } from 'famri-database';
 
-import { nodeSizeField, nodeIDField } from '../shared/coauthor-network/coauthor-network-fields';
+import {
+  nodeSizeField,
+  nodeIDField,
+  nodeColorField,
+  nodeLabelField
+} from '../shared/coauthor-network/coauthor-network-fields';
+
 import { CoauthorNetworkDatabaseService } from '../shared/coauthor-network/coauthor-network-database.service';
 
 @Component({
@@ -31,6 +37,10 @@ export class CoauthorNetworkComponent implements OnInit, OnChanges {
 
   nodeSize: BoundField<string>;
   nodeID: BoundField<string>;
+  nodeColor: BoundField<string>;
+  nodeLabel: BoundField<string>;
+
+  nodeColorRange: string[];
 
   constructor(private dataService: CoauthorNetworkDatabaseService) { }
 
@@ -46,6 +56,10 @@ export class CoauthorNetworkComponent implements OnInit, OnChanges {
     // not user facing
     this.nodeSize = nodeSizeField.getBoundField('size');
     this.nodeID = nodeIDField.getBoundField('id');
+    this.nodeColor = nodeColorField.getBoundField('color');
+    this.nodeLabel = nodeLabelField.getBoundField('label');
+
+    this.nodeColorRange = this.dataService.nodeColorRange;
   }
 
   ngOnChanges(changes: SimpleChanges) {

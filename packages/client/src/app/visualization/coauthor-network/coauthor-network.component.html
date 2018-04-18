@@ -1,8 +1,14 @@
 <dino-force-network
   [nodeSizeField]="nodeSize"
   [nodeIDField]="nodeID"
+  [nodeColorField]="nodeColor"
+  [nodeLabelField]="nodeLabel"
+
   [dataNodes]="filteredAuthors"
   [dataEdges]="filteredCoAuthors"
+
+  [nodeColorRange]="nodeColorRange"
+  
   [width]="width"
   [height]="height">
 </dino-force-network>

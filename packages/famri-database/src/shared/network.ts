@@ -59,7 +59,7 @@ export class Network {
     this.db.authors = [];
     this.db.coauthors = [];
     
-    const topCoAuthors = 100;
+    const topCoAuthors = 10;
     const authorIds = {};
     tmpAuthors.sort((a,b) => b.coauthorCount - a.coauthorCount);
     for (let i = 0; i < Math.min(topCoAuthors, tmpAuthors.length);  ++i) {
