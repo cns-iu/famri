@@ -4,6 +4,8 @@ import {
   SimpleChanges
 } from '@angular/core';
 
+import { Subscription } from 'rxjs/Subscription';
+
 import { BoundField } from '@ngx-dino/core';
 import { Filter } from 'famri-database';
 
@@ -18,6 +20,8 @@ import { pointSizeField } from '../shared/geomap/geomap-fields';
 })
 export class GeomapLegendComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};
+
+  private subscriptions: Subscription[] = [];
 
   gradient = '';
   medianCount: number;
@@ -41,7 +45,12 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
   }
 
   private update() {
-    this.service.fetchData(this.filter).subscribe(() => {
+    if (this.subscriptions.length !== 0) {
+      this.subscriptions.forEach((s) => s.unsubscribe());
+      this.subscriptions = [];
+    }
+
+    this.subscriptions.push(this.service.fetchData(this.filter).subscribe(() => {
       const colors: string[] = [];
       for (let i = 0; i <= this.service.maxCountRef.max; ++i) {
         const color = this.service.gradient(i);
@@ -54,16 +63,16 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
       }
 
       this.gradient = `linear-gradient(to bottom, ${colors.join(', ')})`;
-    });
+    }));
 
-    this.service.countsByState.subscribe(() => {
+    this.subscriptions.push(this.service.countsByState.subscribe(() => {
       this.maxCount = this.service.maxCountRef.max;
       this.medianCount = Math.floor(this.maxCount / 2);
-    });
+    }));
 
-    this.service.filteredGrants.subscribe((grants) => {
+    this.subscriptions.push(this.service.filteredGrants.subscribe((grants) => {
       this.sizeValues = grants.add.map(this.sizeField.operator.getter)
         .map((weight) => ({weight}));
-    });
+    }));
   }
 }

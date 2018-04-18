@@ -9,15 +9,20 @@ import { DinoScienceMapLegendModule } from '@ngx-dino/science-map-legend';
 import { DinoGeomapModule } from '@ngx-dino/geomap';
 
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
+import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
+
 import { ScienceMapComponent } from './science-map/science-map.component';
+import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
 
 import { GeomapDatabaseService } from './shared/geomap/geomap-database.service';
 import { GeomapComponent } from './geomap/geomap.component';
 import { GeomapLegendComponent } from './geomap-legend/geomap-legend.component';
-import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
-import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
-import { FilterComponent } from './filter/filter.component';
+
 import { StatisticsComponent } from './statistics/statistics.component';
+import { StatisticsService } from './shared/statistics/statistics.service';
+
+import { FilterComponent } from './filter/filter.component';
+
 
 @NgModule({
   imports: [
@@ -58,6 +63,9 @@ import { StatisticsComponent } from './statistics/statistics.component';
 
     FilterComponent
   ],
-  providers: [GeomapDatabaseService]
+  providers: [
+    GeomapDatabaseService,
+    StatisticsService
+  ]
 })
 export class VisualizationModule { }
