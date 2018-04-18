@@ -8,7 +8,8 @@
 		"update": "git submodule update && lerna bootstrap && lerna link",
 		"clean": "lerna clean",
 		"build-database": "lerna run build --scope=famri-database",
-		"build-client": "lerna run build --scope=client"
+		"build-client": "lerna run build --scope=client",
+		"build-windows": "lerna run build-windows --scope=electron"
 	},
 	"devDependencies": {
 		"lerna": "^2.8.0"
