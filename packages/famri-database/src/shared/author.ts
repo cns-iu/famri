@@ -9,6 +9,10 @@ export interface Author {
 }
 
 export interface CoAuthorEdge {
+  id: string;
+  source: string;
+  target: string;
+
   author1: Author;
   author2: Author;
 

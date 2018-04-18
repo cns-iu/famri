@@ -12,7 +12,6 @@ import { Grant } from '../shared/grant';
 
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
 import { database } from './database';
-import { Network } from './network';
 
 function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueField: string): Promise<{[key: string]: number}> {
   const acc: any = {};
@@ -32,19 +31,35 @@ function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueFiel
 
 @Injectable()
 export class DatabaseService {
-  db = database;
+  private db = database;
 
   constructor() { }
 
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
-    const filteredAuthors = Network.getAuthorsList(filter);
-    return Observable.of(filteredAuthors);
+    return Observable.of(this.db.authors).map((authors) => {
+      return !filter.year ? authors : this.filterCoAuthors(filter);
+    }).delay(1);
+  }
+  private filterCoAuthors(filter: Partial<Filter> = {}): Author[] {
+    const years = [];
+    for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
+      years.push(yr);
+    }
+    const filtered = this.db.authors.filter((a) => {
+      return years.filter((y) => a.paperCountsByYear[y]).length > 0;
+    });
+    return filtered.slice(0, 10);
   }
 
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
-    const filteredAuthors = Network.getAuthorsList(filter);
-    const filteredCoauthorEdgeList = Network.getCoauthorsList(filter);
-    return Observable.of(filteredCoauthorEdgeList);
+    return Observable.of(this.db.coauthorEdges).map((edges) => {
+      if (!filter.year) {
+        return edges;
+      } else {
+        const authors = this.filterCoAuthors(filter);
+        return this.db.coauthorNetwork.getEdges(authors);
+      }
+    }).delay(1);
   }
 
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
