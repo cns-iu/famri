@@ -222,7 +222,7 @@ const mappedPubs = grantPubs.map((gp: any) => {
   const pub = pubsMap[id];
   if (pub) {
     pub.famri_id = gp.famri_id;
-    pub.grant_id = gp.id;
+    pub.grant_id = gp.grant.id;
     pub.grant = gp.grant;
     gp.grant.publicationIds = (gp.grant.publicationIds || []).concat([pub.id]);
   }

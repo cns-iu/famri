@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Map, Set } from 'immutable';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
@@ -13,6 +12,7 @@ import { Grant } from '../shared/grant';
 
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
 import { database } from './database';
+import { Network } from './network';
 
 function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueField: string): Promise<{[key: string]: number}> {
   const acc: any = {};
@@ -37,62 +37,16 @@ export class DatabaseService {
   constructor() { }
 
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
-    const fullAuthors = Map<string, Author>().asMutable();
-    const coAuthors = Map<Author, Set<string>>().asMutable();
-    const filteredByYear = !filter.year ? this.db.publications : this.db.publications.filter(
-      (pubs) => pubs.year > filter.year.start && pubs.year < filter.year.end
-    );
-
-    filteredByYear.forEach(element => {
-      element.authors.forEach(author => {
-        fullAuthors.update(author, (a = {
-         name: author,
-         paperCount: 0,
-         coauthorCount: 0,
-         paperCountsByYear: undefined,
-         coauthorCountsByYear: undefined
-       }) => {
-         ++a.paperCount;
-         coAuthors.updateIn([a], (s = Set()) => {
-           return s.union(element.authors);
-         });
-         return a;
-        });
-      });
-    });
-
-    const tmpAuthors = fullAuthors.valueSeq().toArray();
-    const tmpCoauthors = [];
-    tmpAuthors.forEach((a) => {
-      const initialCoauthors = coAuthors.get(a);
-      a.coauthorCount = coAuthors.get(a).size - 1;
-      initialCoauthors.forEach(element => {
-        if(a.name !== element) {
-          let tempEntry = {
-            author1: a,
-            author2: fullAuthors.get(element),
-            count: 0,
-            countsByYear: undefined
-          };
-          tmpCoauthors.push(tempEntry);
-        }
-      });
-    });
-
-    for (let i = 0; i < tmpAuthors.length; ++i) {
-      this.db.authors.push(tmpAuthors[i]);
-    }
-
-    for (let i = 0; i < tmpCoauthors.length; ++i) {
-      this.db.coauthors.push(tmpCoauthors[i]);
-    }
-
-    return Observable.of(this.db.authors);
+    const filteredAuthors = Network.getAuthorsList(filter);
+    return Observable.of(filteredAuthors);
   }
+
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
-    this.getAuthors(filter);
-    return Observable.of(this.db.coauthors);
+    const filteredAuthors = Network.getAuthorsList(filter);
+    const filteredCoauthorEdgeList = Network.getCoauthorsList(filter);
+    return Observable.of(filteredCoauthorEdgeList);
   }
+
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
     return Observable.of(this.db.grants).map((grants) => {
       return !filter.year ? grants : grants.filter((g) => {
@@ -100,6 +54,7 @@ export class DatabaseService {
       });
     }).delay(1);
   }
+
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
     if(filter.year) {
       const filteredPublications = this.db.publications.filter((pubs: any) => {
