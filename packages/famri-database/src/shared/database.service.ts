@@ -37,29 +37,28 @@ export class DatabaseService {
 
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
     return Observable.of(this.db.authors).map((authors) => {
-      return !filter.year ? authors : this.filterCoAuthors(filter);
-    }).delay(1);
-  }
-  private filterCoAuthors(filter: Partial<Filter> = {}): Author[] {
-    const years = [];
-    for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
-      years.push(yr);
-    }
-    const filtered = this.db.authors.filter((a) => {
-      return years.filter((y) => a.paperCountsByYear[y]).length > 0;
+      return this.filterAuthors(filter);
     });
-    return filtered.slice(0, 10);
+  }
+  private filterAuthors(filter: Partial<Filter> = {}): Author[] {
+    let filtered = this.db.authors;
+    if (filter.year) {
+      const years = [];
+      for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
+        years.push(yr);
+      }
+      filtered = this.db.authors.filter((a) => {
+        return years.filter((y) => a.paperCountsByYear[y]).length > 0;
+      });
+    }
+    return filtered.slice(0, 50);
   }
 
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
     return Observable.of(this.db.coauthorEdges).map((edges) => {
-      if (!filter.year) {
-        return edges;
-      } else {
-        const authors = this.filterCoAuthors(filter);
-        return this.db.coauthorNetwork.getEdges(authors);
-      }
-    }).delay(1);
+      const authors = this.filterAuthors(filter);
+      return this.db.coauthorNetwork.getEdges(authors);
+    });
   }
 
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {

@@ -38,10 +38,12 @@ export class CoAuthorNetwork {
     const edges: CoAuthorEdge[] = [];
     authors.forEach((a1) => {
       authors.forEach((a2) => {
-        const edge = this.getEdge(a1, a2);
-        if (!seen[edge.id]) {
-          seen[edge.id] = true;
-          edges.push(edge);
+        if (a1.id !== a2.id) {
+          const edge = this.getEdge(a1, a2);
+          if (!seen[edge.id]) {
+            seen[edge.id] = true;
+            edges.push(edge);
+          }
         }
       });
     });
