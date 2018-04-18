@@ -1,7 +1,7 @@
 import {
   Component, Input,
   OnInit, OnChanges,
-  SimpleChanges
+  ViewEncapsulation, SimpleChanges
 } from '@angular/core';
 
 import { Filter } from 'famri-database';
@@ -14,7 +14,8 @@ import { StatisticsService } from '../shared/statistics/statistics.service';
 @Component({
   selector: 'famri-statistics',
   templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.sass']
+  styleUrls: ['./statistics.component.sass'],
+  encapsulation: ViewEncapsulation.None
 })
 export class StatisticsComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};

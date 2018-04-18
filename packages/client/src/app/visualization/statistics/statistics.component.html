@@ -40,9 +40,11 @@
     <hr>
     <div class="value-container">
       <div class="subtitle"># Authors by Year</div>
-      <dino-datatable class="value" [data]="statistics.nAuthorsByYear"
-                                    [fields]="nAuthorsByYearFields">
-      </dino-datatable>
+      <div class="table-container">
+        <dino-datatable class="value" [data]="statistics.nAuthorsByYear"
+                                      [fields]="nAuthorsByYearFields">
+        </dino-datatable>
+      </div>
     </div>
   </div>
 </div>

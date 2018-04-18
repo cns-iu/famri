@@ -4,12 +4,14 @@ import { Author, CoAuthorEdge } from '../shared/author';
 import { Grant } from '../shared/grant';
 
 import * as rawDatabase from '../../../../raw-data/database.json';
+import { CoAuthorNetwork } from './coauthor-network';
 
 export class FamriDatabase {
-  grants: Grant[] = rawDatabase.grants;
-  publications: Publication[] = rawDatabase.publications;
-  authors: Author[] = [];
-  coauthors: CoAuthorEdge[] = [];
+  readonly grants: Grant[] = rawDatabase.grants;
+  readonly publications: Publication[] = rawDatabase.publications;
+  readonly coauthorNetwork: CoAuthorNetwork;
+  readonly authors: Author[];
+  readonly coauthorEdges: CoAuthorEdge[];
 
   constructor() {
     const id2pub: any = {};
@@ -18,6 +20,10 @@ export class FamriDatabase {
       g.publications = (g.publicationIds || []).map((id) => id2pub[id]).filter((s) => !!s);
       g.publications.forEach((p) => p.grant = g);
     });
+
+    this.coauthorNetwork = new CoAuthorNetwork(rawDatabase.publications);
+    this.authors = this.coauthorNetwork.authors;
+    this.coauthorEdges = this.coauthorNetwork.coauthorEdges;
   }
 }
 
