@@ -1,3 +1,36 @@
-<p>
-  statistics works!
-</p>
+<div class="container">
+  <div class="general">
+    <div class="title">General Statistics</div>
+    <hr />
+    <div class="value-container">
+      <div class="value-group">
+        <div class="subtitle"># Publications</div>
+        <div class="value">{{statistics.nPublications}}</div>
+      </div>
+
+      <div class="value-group">
+        <div class="subtitle"># Authors</div>
+        <div class="value">{{statistics.nAuthors}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="network">
+    <div class="title">Network Statistics</div>
+    <hr>
+    <div class="value-container">
+      TODO
+    </div>
+  </div>
+
+  <div class="other">
+    <div class="title">Other Statistics</div>
+    <hr>
+    <div class="value-container">
+      <div class="subtitle"># Authors by Year</div>
+      <dino-datatable class="value" [data]="statistics.nAuthorsByYear"
+                                    [fields]="nAuthorsByYearFields">
+      </dino-datatable>
+    </div>
+  </div>
+</div>

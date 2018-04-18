@@ -23,6 +23,7 @@ import { ScienceMapDatabaseService } from '../shared/science-map/science-map-dat
 export class ScienceMapComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};
   @Output() filterUpdateComplete = new EventEmitter<boolean>();
+  @Output() nodeClicked = new EventEmitter<any>();
   @Input() width: number;
   @Input() height: number;
 

@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "main": "main.js",
+  "productName": "FAMRI",
+  "name": "electron",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "rimraf dist && cd ../client; ng build --base-href=./ --output-path ../electron/dist",
+    "start": "yarn build && yarn electron",
+    "start-prod": "yarn build --prod && yarn electron",
+    "electron": "electron .",
+    "electron-packager": "electron-packager . --out=build --ignore=node_modules --ignore=build --overwrite",
+    "build-all": "rimraf build && yarn build --prod && yarn electron-packager --all",
+    "build-windows": "rimraf build/*-win32-* && yarn build --prod && yarn electron-packager --platform=win32 && zip -r build/FAMRI-win32-x64.zip build/FAMRI-win32-x64"
+  },
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-download": "^4.1.0",
+    "electron-packager": "^12.0.1",
+    "rimraf": "^2.6.2"
+  }
+}

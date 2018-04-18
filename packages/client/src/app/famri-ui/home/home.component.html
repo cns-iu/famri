@@ -1,7 +1,7 @@
 <mat-toolbar class="toolbar z-depth-1-half">
   <mat-icon class="hamburger" (click)="sidenav.toggle()">menu</mat-icon>
   <span>Flight Attendant Medical Research Institute (FAMRI)</span>
-  <img id="cnsLogo" src="/assets/cns-logo.png" title="Cyberinfrastructure for Network Science Center">
+  <img id="cnsLogo" src="assets/cns-logo.png" title="Cyberinfrastructure for Network Science Center">
 </mat-toolbar>
 
 <mat-sidenav-container>
@@ -55,10 +55,13 @@
         </famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
-        <famri-geomap [width]="openState ? narrowWidth : wideWidth" [height]="height"></famri-geomap>
+        <famri-geomap [width]="openState ? narrowWidth : wideWidth"
+                      [height]="height"
+                      [filter]="filter">
+        </famri-geomap>
       </mat-tab>
       <mat-tab label="Statistics">
-        <famri-statistics></famri-statistics>
+        <famri-statistics [filter]="filter"></famri-statistics>
       </mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>
