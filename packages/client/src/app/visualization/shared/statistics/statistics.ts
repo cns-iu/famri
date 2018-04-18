@@ -3,15 +3,13 @@ export interface CountByYear {
   count: number;
 }
 
-export interface CountByPublication {
-  publication: string;
-  count: number;
-}
-
 export interface Statistics {
   // General measures
   nPublications: number;
   nAuthors: number;
+  nGrants: number;
+
+  avgAuthorsPerPublication: number;
   // More?
 
   // Network measures
@@ -19,9 +17,7 @@ export interface Statistics {
 
   // Other measures
   nAuthorsByYear: CountByYear[];
-  nAuthorsByPublication: CountByPublication[];
 
   nInstitutionsByYear: CountByYear[];
-  nInstitutionsByPublication: CountByPublication[];
   // More?
 }

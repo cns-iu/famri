@@ -51,6 +51,11 @@ export class StatisticsService {
 
     result.nPublications = publications.length;
     result.nAuthors = authors.length;
+    result.nGrants = grants.length;
+
+    result.avgAuthorsPerPublication = publications.reduce((sum, pub) => {
+      return sum + pub.authors.length;
+    }, 0) / publications.length;
 
     // nAuthorsByYear
     const authorsByYear = Map<number, Set<string>>().withMutations((map) => {

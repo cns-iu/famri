@@ -12,6 +12,18 @@
         <div class="subtitle"># Authors</div>
         <div class="value">{{statistics.nAuthors}}</div>
       </div>
+
+      <div class="value-group">
+        <div class="subtitle"># Grants</div>
+        <div class="value">{{statistics.nGrants}}</div>
+      </div>
+
+      <div class="value-group">
+        <div class="subtitle">Average # Authors per Publication</div>
+        <div class="value">
+          {{statistics.avgAuthorsPerPublication | number:'.2-2'}}
+        </div>
+      </div>
     </div>
   </div>
 
