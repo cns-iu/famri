@@ -28,7 +28,7 @@ export class CoauthorNetworkLegendComponent implements OnInit {
     this.minColorValueLabel = this.dataService.minColorValueLabel;
     this.midColorValueLabel = this.dataService.midColorValueLabel;
     this.maxColorValueLabel = this.dataService.maxColorValueLabel;
-    this.gradient = `linear-gradient(to bottom, ${this.dataService.nodeColorRange.join(', ')})`;
+    this.gradient = `linear-gradient(to top, ${this.dataService.nodeColorRange.join(', ')})`;
   }
 
 }
