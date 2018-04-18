@@ -42,8 +42,15 @@ export class StatisticsService {
     this.subscriptions = [];
   }
 
-  private collectStatistics(data: DataTuple): Statistics {
+  private collectStatistics(
+    [authors, coauthorsEdges, grants, publications]: DataTuple
+  ): Statistics {
+    const result = {} as Statistics;
+
+    result.nPublications = publications.length;
+    result.nAuthors = authors.length;
+
     // TODO
-    return undefined;
+    return result;
   }
 }

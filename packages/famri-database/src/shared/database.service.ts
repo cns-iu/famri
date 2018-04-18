@@ -39,7 +39,7 @@ export class DatabaseService {
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
     const fullAuthors = Map<string, Author>().asMutable();
     const coAuthors = Map<Author, Set<string>>().asMutable();
-    const filteredByYear = this.db.publications.filter(
+    const filteredByYear = !filter.year ? this.db.publications : this.db.publications.filter(
       (pubs) => pubs.year > filter.year.start && pubs.year < filter.year.end
     );
 

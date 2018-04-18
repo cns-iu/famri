@@ -56,7 +56,7 @@
         <famri-geomap [width]="openState ? narrowWidth : wideWidth" [height]="height"></famri-geomap>
       </mat-tab>
       <mat-tab label="Statistics">
-        <famri-statistics></famri-statistics>
+        <famri-statistics [filter]="filter"></famri-statistics>
       </mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>

@@ -8,6 +8,8 @@ import { DinoScienceMapModule } from '@ngx-dino/science-map';
 import { DinoScienceMapLegendModule } from '@ngx-dino/science-map-legend';
 import { DinoGeomapModule } from '@ngx-dino/geomap';
 
+import { SharedModule } from '../shared/shared.module';
+
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
 import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
 
@@ -27,6 +29,7 @@ import { FilterComponent } from './filter/filter.component';
 @NgModule({
   imports: [
     CommonModule,
+    SharedModule,
 
     NouisliderModule,
 

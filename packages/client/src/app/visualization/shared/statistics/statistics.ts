@@ -3,14 +3,14 @@ export interface CountByYear {
   count: number;
 }
 
-export interface CountByPaper {
-  paper: string;
+export interface CountByPublication {
+  publication: string;
   count: number;
 }
 
 export interface Statistics {
   // General measures
-  nPapers: number;
+  nPublications: number;
   nAuthors: number;
   // More?
 
@@ -18,10 +18,10 @@ export interface Statistics {
   // TODO
 
   // Other measures
-  authorsByYear: CountByYear[];
-  authorsByPaper: CountByPaper[];
+  nAuthorsByYear: CountByYear[];
+  nAuthorsByPublication: CountByPublication[];
 
-  institutionsByYear: CountByYear[];
-  institutionsByPaper: CountByPaper[];
+  nInstitutionsByYear: CountByYear[];
+  nInstitutionsByPublication: CountByPublication[];
   // More?
 }
