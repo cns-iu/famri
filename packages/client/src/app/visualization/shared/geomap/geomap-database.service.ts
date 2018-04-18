@@ -39,6 +39,19 @@ export class GeomapDatabaseService {
     mapping: {default: true}
   });
 
+  readonly maxPubCountRef = {max: 1};
+  readonly pointSizeField = new Field<number>({
+    id: 'psize',
+    label: 'Point Size',
+
+    initialOp: Operator.access('publications.length'),
+    mapping: {
+      fixed: Operator.constant(30),
+      npub_area: Operator.map(this.size.bind(this)),
+      npub_rad: true
+    }
+  });
+
   readonly countsByState = new EventEmitter<Changes<{state: string, count: number}>>();
   readonly filteredGrants = new EventEmitter<Changes<Grant>>();
 
@@ -59,9 +72,15 @@ export class GeomapDatabaseService {
   }
 
   private processPointData(grants: Grant[]): void {
-    const changes = new Changes(grants, this.lastGrants);
+    let max = 1;
 
+    grants.forEach((g) => {
+      max = Math.max(max, g.publications.length);
+    });
+
+    const changes = new Changes(grants, this.lastGrants);
     this.lastGrants = grants;
+    this.maxPubCountRef.max = max;
     this.filteredGrants.emit(changes);
   }
 
@@ -91,5 +110,9 @@ export class GeomapDatabaseService {
 
   gradient(value: number): string {
     return rawGradient(.75 * value / this.maxCountRef.max + .25);
+  }
+
+  size(value: number): number {
+    return 500 * value / this.maxPubCountRef.max + 30;
   }
 }

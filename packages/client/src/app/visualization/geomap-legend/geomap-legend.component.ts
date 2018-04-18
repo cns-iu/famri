@@ -28,10 +28,10 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
   maxCount: number;
 
   sizeField: BoundField<number>;
-  sizeValues: {weight: number}[];
+  sizeValues: any[];
 
   constructor(private service: GeomapDatabaseService) {
-    this.sizeField = pointSizeField.getBoundField('fixed');
+    this.sizeField = service.pointSizeField.getBoundField('npub_rad');
   }
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
       this.subscriptions = [];
     }
 
-    this.subscriptions.push(this.service.fetchData(this.filter).subscribe(() => {
+    this.subscriptions.push(this.service.fetchData(this.filter).subscribe((grants) => {
       const colors: string[] = [];
       for (let i = 0; i <= this.service.maxCountRef.max; ++i) {
         const color = this.service.gradient(i);
@@ -62,17 +62,13 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
         colors.push(hexColor);
       }
 
-      this.gradient = `linear-gradient(to bottom, ${colors.join(', ')})`;
+      this.gradient = `linear-gradient(to top, ${colors.join(', ')})`;
+      this.sizeValues = grants;
     }));
 
     this.subscriptions.push(this.service.countsByState.subscribe(() => {
       this.maxCount = this.service.maxCountRef.max;
       this.medianCount = Math.floor(this.maxCount / 2);
-    }));
-
-    this.subscriptions.push(this.service.filteredGrants.subscribe((grants) => {
-      this.sizeValues = grants.add.map(this.sizeField.operator.getter)
-        .map((weight) => ({weight}));
     }));
   }
 }
