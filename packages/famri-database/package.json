@@ -13,6 +13,7 @@
     "build-offline-tools": "webpack --config webpack.offline.config.js",
     "build-database": "yarn build-offline-tools && yarn read-raw-data && yarn create-database && rm -rf ../../raw-data/db && yarn import-database && yarn import-database",
     "read-raw-data": "node build/read-raw-data",
+    "build-sci2-data": "rimraf ../../raw-data/sci2 && mkdir ../../raw-data/sci2 && node src/loader/build-sci2-data.js",
     "create-database": "node build/create-database",
     "import-database": "mkdir -p ../../raw-data/db && node build/import-database"
   },
@@ -77,6 +78,7 @@
     "@types/pouchdb-adapter-memory": "^6.1.2",
     "@types/pouchdb-adapter-websql": "^6.1.2",
     "codelyzer": "^4.0.1",
+    "csv-write-stream": "^2.0.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
@@ -87,9 +89,11 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "ng-packagr": "^2.2.0",
     "protractor": "~5.1.2",
+    "rimraf": "^2.6.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
     "typescript": "~2.4.2",
+    "unidecode": "^0.1.8",
     "webpack": "^3.10.0",
     "worker-loader": "^1.1.1"
   },
