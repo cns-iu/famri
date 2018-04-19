@@ -50,6 +50,22 @@ export class DatabaseService {
       filtered = filtered.filter((a) => {
         return years.filter((y) => a.paperCountsByYear[y]).length > 0;
       });
+      if (filter.year) {
+        const years = [];
+        for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
+          years.push(yr);
+        }
+        filtered = filtered.map((a) => {
+          const paperCount = years.reduce((acc, y) => (a.paperCountsByYear[y] || 0) + acc, 0);
+          if (paperCount > 0) {
+            const coauthorCount = years.reduce((acc, y) => (a.coauthorCountsByYear[y] || 0) + acc, 0);
+            return Object.assign(a, {paperCount, coauthorCount});
+          } else {
+            return null;
+          }
+        }).filter((a) => !!a);
+      }
+      filtered.sort((a,b) => b.paperCount - a.paperCount);
     }
     if (filter.limit && filter.limit > 0) {
       filtered = filtered.slice(0, filter.limit);

@@ -15,9 +15,9 @@ import { CoauthorNetworkDatabaseService } from './shared/coauthor-network/coauth
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
 import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
 
+import { ScienceMapDatabaseService } from './shared/science-map/science-map-database.service';
 import { ScienceMapComponent } from './science-map/science-map.component';
 import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
-
 
 import { GeomapDatabaseService } from './shared/geomap/geomap-database.service';
 import { GeomapComponent } from './geomap/geomap.component';
@@ -72,6 +72,7 @@ import { FilterComponent } from './filter/filter.component';
   ],
   providers: [
     CoauthorNetworkDatabaseService,
+    ScienceMapDatabaseService,
     GeomapDatabaseService,
     StatisticsService
   ]

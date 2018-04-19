@@ -7,6 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 import { BoundField } from '@ngx-dino/core';
 
@@ -17,10 +18,9 @@ import { ScienceMapDatabaseService } from '../shared/science-map/science-map-dat
 @Component({
   selector: 'famri-science-map',
   templateUrl: './science-map.component.html',
-  styleUrls: ['./science-map.component.sass'],
-  providers: [ ScienceMapDatabaseService ]
+  styleUrls: ['./science-map.component.sass']
 })
-export class ScienceMapComponent implements OnInit, OnChanges {
+export class ScienceMapComponent implements OnInit {
   @Input() filter: Partial<Filter> = {};
   @Output() filterUpdateComplete = new EventEmitter<boolean>();
   @Output() nodeClicked = new EventEmitter<any>();
@@ -29,27 +29,15 @@ export class ScienceMapComponent implements OnInit, OnChanges {
 
   subdisciplineSize: BoundField<string>;
   subdisciplineID: BoundField<number|string>;
-  filteredSubdisciplines: SubdisciplineWeight[];
+  filteredSubdisciplines: Observable<SubdisciplineWeight[]>;
 
-  constructor(private dataService: ScienceMapDatabaseService) { }
+  constructor(private dataService: ScienceMapDatabaseService) {
+    this.filteredSubdisciplines = this.dataService.filteredSubdisciplines.asObservable();
+  }
 
   ngOnInit() {
-    this.filteredSubdisciplines = [];
-
-    this.dataService.filteredSubdisciplines.subscribe((subdisciplines) => {
-      this.filteredSubdisciplines = subdisciplines;
-    });
-
     // not user facing
     this.subdisciplineSize = subdisciplineSizeField.getBoundField('size');
     this.subdisciplineID = subdisciplineIDField.getBoundField('id');
   }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (('filter' in changes) && this.filter) {
-        this.dataService.fetchData(this.filter).subscribe(
-          undefined, undefined, () => this.filterUpdateComplete.emit(true)
-        );
-      }
-    }
-  }
+}
