@@ -37,6 +37,7 @@ export class GeomapComponent implements OnInit, OnChanges {
   pointSizeField: BoundField<number>;
   pointColorField: BoundField<string>;
   pointStrokeColorField: BoundField<string>;
+  pointTitleField: BoundField<string>;
 
   adapters = [];
 
@@ -55,6 +56,7 @@ export class GeomapComponent implements OnInit, OnChanges {
     this.pointSizeField = this.service.pointSizeField.getBoundField('npub_area');
     this.pointColorField = Fields.pointColorField.getBoundField('fixed');
     this.pointStrokeColorField = Fields.pointStrokeColorField.getBoundField('fixed');
+    this.pointTitleField = Fields.pointTitleField.getBoundField('default');
 
     this.adapters.push(
       this.stateField,
@@ -65,7 +67,8 @@ export class GeomapComponent implements OnInit, OnChanges {
       this.pointShapeField,
       this.pointSizeField,
       this.pointColorField,
-      this.pointStrokeColorField
+      this.pointStrokeColorField,
+      this.pointTitleField
     );
     this.adapters.forEach((f, i, a) => {
       a[i] = adaptBoundField(f);

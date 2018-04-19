@@ -27,6 +27,14 @@ export const pointIdField = new Field<string>({
   mapping: {gid: true}
 });
 
+export const pointTitleField = new Field<string>({
+  id: 'ptitle',
+  label: 'Point Title',
+
+  initialOp: Operator.access('title', ''),
+  mapping: {default: true}
+});
+
 export const pointPositionField = new Field<[number, number]>({
   id: 'pposition',
   label: 'Point Latitude and Longitude',
@@ -55,13 +63,13 @@ export const pointColorField = new Field<string>({
   id: 'pcolor',
   label: 'Point Fill Color',
 
-  mapping: {fixed: Operator.constant('black')}
+  mapping: {fixed: Operator.constant('#555')}
 });
 
 export const pointStrokeColorField = new Field<string>({
   id: 'pstroke-color',
   label: 'Point Stroke Color',
 
-  initialOp: Operator.constant('black'),
+  initialOp: Operator.constant('#555'),
   mapping: {fixed: true}
 });

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Map, Record } from 'immutable';
+import { Map, Record, Set } from 'immutable';
 
 import { interpolateOrRd as rawGradient } from 'd3-scale-chromatic';
 
@@ -20,6 +20,7 @@ export interface AggregatedGrant {
   id: string;
   location: typeof LocationRecord;
   count: number;
+  title?: string;
 }
 
 
@@ -94,23 +95,34 @@ export class GeomapDatabaseService {
 
           map.updateIn([location], (ag: AggregatedGrant) => {
             if (ag === undefined) {
-              return {id: g.id, location, count: g.publications.length};
+              return {
+                id: g.id,
+                location: location,
+                count: g.publications.length,
+                title: (g.pi.location || {city: undefined}).city
+              };
             }
 
             ag.count += g.publications.length;
             return ag;
           });
         });
-      }).valueSeq().toArray();
+      }).valueSeq().toArray().sort((a, b) => b.count - a.count);
 
-    let max = 1;
-    aggrGrants.forEach((g) => {
-      max = Math.max(max, g.count);
-    });
-    this.maxPubCountRef.max = max;
+    const titleSet = Set<string>().asMutable();
+    aggrGrants.reduce((counter, ag) => {
+      if (counter < 5 && ag.title !== undefined && !titleSet.has(ag.title)) {
+        titleSet.add(ag.title);
+        return counter + 1;
+      }
+
+      ag.title = undefined;
+      return counter;
+    }, 0);
 
     const changes = new Changes(aggrGrants, this.lastGrants);
     this.lastGrants = aggrGrants;
+    this.maxPubCountRef.max = (aggrGrants[0] || {count: 1}).count;
     this.filteredGrants.emit(changes);
     this.grantsNoLocation.emit(noLocationCount);
   }
