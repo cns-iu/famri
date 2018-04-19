@@ -31,7 +31,15 @@
     <div class="title">Network Statistics</div>
     <hr>
     <div class="value-container">
-      TODO
+      <div class="value-group">
+        <div class="subtitle">Average # of Co-Authors</div>
+        <div class="value">{{statistics.avgDegree | number:'.2-2'}}</div>
+      </div>
+
+      <div class="value-group">
+        <div class="subtitle">Max # of Co-Authors</div>
+        <div class="value">{{statistics.maxDegree}}</div>
+      </div>
     </div>
   </div>
 

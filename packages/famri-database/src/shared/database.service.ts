@@ -77,9 +77,14 @@ export class DatabaseService {
             for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
               years.push(yr);
             }
-            edges = edges.filter((e) => {
-              return years.filter((y) => e.countsByYear[y]).length > 0;
-            });
+            edges = edges.map((e) => {
+              const count = years.reduce((acc, y) => (e.countsByYear[y] || 0) + acc, 0);
+              if (count > 0) {
+                return Object.assign({}, e, {count});
+              } else {
+                return null;
+              }
+            }).filter((e) => !!e);
           }
           edges.sort((a,b) => b.count - a.count);
           // edges = edges.filter(e => e.count > 1);
