@@ -7,6 +7,10 @@ import '@ngx-dino/core/src/operators/add/method/map';
 
 // Utility
 const textDataOp = Operator.map((text) => ({type: 'text', content: text}));
+const textDataOp2 = textDataOp.map((data) => {
+  data.content = data.content.toLocaleString();
+  return data;
+});
 
 // Common fields
 const commonYearField = new Field({
@@ -25,7 +29,7 @@ export namespace AuthorsByYearFields {
     label: '# Authors',
 
     initialOp: Operator.access('count'),
-    mapping: {default: textDataOp}
+    mapping: {default: textDataOp2}
   });
 }
 
@@ -36,7 +40,7 @@ export namespace InstitutionsByYearFields {
     label: '# Institutions',
 
     initialOp: Operator.access('count'),
-    mapping: {default: textDataOp}
+    mapping: {default: textDataOp2}
   });
 }
 
@@ -47,7 +51,7 @@ export namespace GrantsByYearFields {
     label: '# Grants',
 
     initialOp: Operator.access('count'),
-    mapping: {default: textDataOp}
+    mapping: {default: textDataOp2}
   });
 }
 
@@ -58,6 +62,6 @@ export namespace PublicationsByYearFields {
     label: '# Publications',
 
     initialOp: Operator.access('count'),
-    mapping: {default: textDataOp}
+    mapping: {default: textDataOp2}
   });
 }

@@ -5,7 +5,7 @@ import '@ngx-dino/core/src/operators/add/static/map';
 import '@ngx-dino/core/src/operators/add/method/map';
 
 
-const invalidLatLongObj = {latitude: 29.745, longitude: -78.297};
+const invalidLatLongObj = {latitude: Infinity, longitude: Infinity};
 
 
 // State fields
