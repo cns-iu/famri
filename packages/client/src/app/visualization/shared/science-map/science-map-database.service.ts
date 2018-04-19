@@ -11,6 +11,7 @@ export class ScienceMapDatabaseService {
 
   private dataSubscription: Subscription;
   filteredSubdisciplines = new BehaviorSubject<SubdisciplineWeight[]>([]);
+  unmappedSubdisciplines = new BehaviorSubject<SubdisciplineWeight>({subd_id: -1, weight: 0});
 
   constructor(private databaseService: DatabaseService) { }
 
@@ -19,10 +20,20 @@ export class ScienceMapDatabaseService {
       this.dataSubscription.unsubscribe();
     }
 
-    const subdiscs = this.databaseService.getSubdisciplines(filter);
-    this.dataSubscription = subdiscs.subscribe(
-      (subdisciplines) => this.filteredSubdisciplines.next(subdisciplines)
-    );
+    const subdiscs = this.databaseService.getSubdisciplines(filter).map((subdisciplines) => {
+      const unmappedSubdisciplines = {subd_id: -1, weight: 0};
+      subdisciplines = subdisciplines.filter((s) => {
+        if (s.subd_id == -1) {
+          unmappedSubdisciplines.weight = s.weight;
+        }
+        return s.subd_id != -1;
+      });
+      this.unmappedSubdisciplines.next(unmappedSubdisciplines);
+      return subdisciplines;
+    });
+    subdiscs.subscribe((s) => {
+      this.filteredSubdisciplines.next(s);
+    });
 
     return subdiscs;
   }
