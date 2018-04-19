@@ -8,6 +8,7 @@ export interface Statistics {
   nPublications: number;
   nAuthors: number;
   nGrants: number;
+  nInstitutions: number;
 
   avgAuthorsPerPublication: number;
 
@@ -18,4 +19,6 @@ export interface Statistics {
   // Other measures
   nAuthorsByYear: CountByYear[];
   nInstitutionsByYear: CountByYear[];
+  nGrantsByYear: CountByYear[];
+  nPublicationsByYear: CountByYear[];
 }

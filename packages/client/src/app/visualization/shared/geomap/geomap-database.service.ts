@@ -77,10 +77,10 @@ export class GeomapDatabaseService {
     grants.forEach((g) => {
       max = Math.max(max, g.publications.length);
     });
+    this.maxPubCountRef.max = max;
 
     const changes = new Changes(grants, this.lastGrants);
     this.lastGrants = grants;
-    this.maxPubCountRef.max = max;
     this.filteredGrants.emit(changes);
   }
 
