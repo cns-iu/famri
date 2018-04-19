@@ -4,7 +4,14 @@ import { Observable } from 'rxjs/Observable';
 import { BoundField } from '@ngx-dino/core';
 import { Author, CoAuthorEdge, CoAuthorGraph, Filter } from 'famri-database';
 
-import { nodeSizeField, nodeIDField, nodeColorField, nodeLabelField } from '../shared/coauthor-network/coauthor-network-fields';
+import {
+  nodeSizeField,
+  nodeIDField,
+  nodeColorField,
+  nodeLabelField,
+
+  edgeSizeField
+} from '../shared/coauthor-network/coauthor-network-fields';
 
 import { CoauthorNetworkDatabaseService } from '../shared/coauthor-network/coauthor-network-database.service';
 
@@ -26,6 +33,7 @@ export class CoauthorNetworkComponent implements OnInit, OnChanges {
   nodeID: BoundField<string>;
   nodeColor: BoundField<string>;
   nodeLabel: BoundField<string>;
+  edgeSize: BoundField<number>;
 
   nodeColorRange: string[];
 
@@ -39,6 +47,8 @@ export class CoauthorNetworkComponent implements OnInit, OnChanges {
     this.nodeColor = nodeColorField.getBoundField('color');
     this.nodeLabel = nodeLabelField.getBoundField('label');
     this.nodeColorRange = this.dataService.nodeColorRange;
+
+    this.edgeSize = edgeSizeField.getBoundField('edgeSize');
   }
 
   ngOnChanges(changes: SimpleChanges) {
