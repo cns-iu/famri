@@ -26,7 +26,7 @@ export class CoAuthorNetwork {
 
         pub.authors.forEach((authorId) => {
           author.coauthors[authorId] = true;
-          author.coauthorsByYear[year][authorId] = true;;
+          author.coauthorsByYear[year][authorId] = true;
         });
       }
       for (const edge of edges) {

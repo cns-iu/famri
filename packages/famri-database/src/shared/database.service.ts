@@ -41,6 +41,7 @@ export class DatabaseService {
     }).delay(1);
   }
   private filterAuthors(filter: Partial<Filter> = {}): Author[] {
+    filter = Object.assign({year: {start:2000, end: 2018}}, filter);
     let filtered = this.db.authors;
     if (filter.year) {
       const years = [];
