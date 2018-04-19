@@ -3,6 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+import { Map, Record } from 'immutable';
+
 import { interpolateOrRd as rawGradient } from 'd3-scale-chromatic';
 
 import { Operator, FieldV2 as Field, Changes } from '@ngx-dino/core';
@@ -13,11 +15,19 @@ import '@ngx-dino/core/src/operators/add/static/map';
 import { DatabaseService, Filter, Grant } from 'famri-database';
 
 
+export const LocationRecord = Record({latitude: Infinity, longitude: Infinity});
+export interface AggregatedGrant {
+  id: string;
+  location: typeof LocationRecord;
+  count: number;
+}
+
+
 @Injectable()
 export class GeomapDatabaseService {
   private grantSubscription: Subscription;
   private lastCounts: any[] = [];
-  private lastGrants: Grant[] = [];
+  private lastGrants: AggregatedGrant[] = [];
 
   readonly maxCountRef = {max: 1};
   readonly stateColorField = new Field<string>({
@@ -44,7 +54,7 @@ export class GeomapDatabaseService {
     id: 'psize',
     label: 'Point Size',
 
-    initialOp: Operator.access('publications.length'),
+    initialOp: Operator.access('count'),
     mapping: {
       fixed: Operator.constant(30),
       npub_area: Operator.map(this.size.bind(this)),
@@ -53,7 +63,7 @@ export class GeomapDatabaseService {
   });
 
   readonly countsByState = new EventEmitter<Changes<{state: string, count: number}>>();
-  readonly filteredGrants = new EventEmitter<Changes<Grant>>();
+  readonly filteredGrants = new EventEmitter<Changes<AggregatedGrant>>();
 
   constructor(private service: DatabaseService) { }
 
@@ -79,8 +89,23 @@ export class GeomapDatabaseService {
     });
     this.maxPubCountRef.max = max;
 
-    const changes = new Changes(grants, this.lastGrants);
-    this.lastGrants = grants;
+    const aggrGrants = Map<typeof LocationRecord, AggregatedGrant>()
+      .withMutations((map) => {
+        grants.forEach((g) => {
+          const location = LocationRecord(g.pi.location);
+          map.updateIn([location], (ag: AggregatedGrant) => {
+            if (ag === undefined) {
+              return {id: g.id, location, count: g.publications.length};
+            }
+
+            ag.count += g.publications.length;
+            return ag;
+          });
+        });
+      }).valueSeq().toArray();
+
+    const changes = new Changes(aggrGrants, this.lastGrants);
+    this.lastGrants = aggrGrants;
     this.filteredGrants.emit(changes);
   }
 
