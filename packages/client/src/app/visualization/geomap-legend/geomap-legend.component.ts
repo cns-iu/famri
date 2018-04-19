@@ -25,6 +25,7 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
   gradient = '';
   medianCount: number;
   maxCount: number;
+  noLocationCount: number;
 
   sizeField: BoundField<number>;
   sizeValues: any[];
@@ -71,6 +72,10 @@ export class GeomapLegendComponent implements OnInit, OnChanges {
 
     this.subscriptions.push(this.service.filteredGrants.subscribe((grants) => {
       this.sizeValues = grants.add;
+    }));
+
+    this.subscriptions.push(this.service.grantsNoLocation.subscribe((count) => {
+      this.noLocationCount = count;
     }));
   }
 }

@@ -64,6 +64,7 @@ export class GeomapDatabaseService {
 
   readonly countsByState = new EventEmitter<Changes<{state: string, count: number}>>();
   readonly filteredGrants = new EventEmitter<Changes<AggregatedGrant>>();
+  readonly grantsNoLocation = new EventEmitter<number>();
 
   constructor(private service: DatabaseService) { }
 
@@ -82,17 +83,15 @@ export class GeomapDatabaseService {
   }
 
   private processPointData(grants: Grant[]): void {
-    let max = 1;
-
-    grants.forEach((g) => {
-      max = Math.max(max, g.publications.length);
-    });
-    this.maxPubCountRef.max = max;
-
+    let noLocationCount = 0;
     const aggrGrants = Map<typeof LocationRecord, AggregatedGrant>()
       .withMutations((map) => {
         grants.forEach((g) => {
-          const location = LocationRecord(g.pi.location);
+          const location: any = LocationRecord(g.pi.location);
+          if (location.latitude === Infinity || location.longitude === Infinity) {
+            noLocationCount++;
+          }
+
           map.updateIn([location], (ag: AggregatedGrant) => {
             if (ag === undefined) {
               return {id: g.id, location, count: g.publications.length};
@@ -104,9 +103,16 @@ export class GeomapDatabaseService {
         });
       }).valueSeq().toArray();
 
+    let max = 1;
+    aggrGrants.forEach((g) => {
+      max = Math.max(max, g.count);
+    });
+    this.maxPubCountRef.max = max;
+
     const changes = new Changes(aggrGrants, this.lastGrants);
     this.lastGrants = aggrGrants;
     this.filteredGrants.emit(changes);
+    this.grantsNoLocation.emit(noLocationCount);
   }
 
   private processStateData(grants: Grant[]): void {
