@@ -36,7 +36,7 @@ export class CoAuthorNetwork {
   getEdges(authors: Author[]): CoAuthorEdge[] {
     const seen: any = {};
     for (const a of authors) { seen[a.id] = true; }
-    return this.coauthorEdges.filter(e => seen[e.source] && seen[e.target]);
+    return this.coauthorEdges.filter(e => seen[e.author1.id] && seen[e.author2.id]);
   }
   getAuthor(id: string): Author {
     let author: Author = this.id2author[id];

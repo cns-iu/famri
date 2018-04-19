@@ -12,5 +12,5 @@ export interface Publication {
   subdisciplines: SubdisciplineWeight[];
 
   grantId?: number;
-  grant?: Grant;
+  grant?: any;
 }

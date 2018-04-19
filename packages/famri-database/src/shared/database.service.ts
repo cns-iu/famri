@@ -72,6 +72,15 @@ export class DatabaseService {
           return a;
         } else {
           let edges = this.db.coauthorNetwork.getEdges(authors);
+          if (filter.year) {
+            const years = [];
+            for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
+              years.push(yr);
+            }
+            edges = edges.filter((e) => {
+              return years.filter((y) => e.countsByYear[y]).length > 0;
+            });
+          }
           edges.sort((a,b) => b.count - a.count);
           // edges = edges.filter(e => e.count > 1);
           return {authors, coauthorEdges: edges};
