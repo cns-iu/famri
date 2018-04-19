@@ -15,7 +15,7 @@
     <div [hidden]="tabIndex === 3" class="sidenavLegend">
       <p class="sidenavTitle">Legend</p>
       <hr>
-      <famri-coauthor-network-legend *ngIf="tabIndex === 0">
+      <famri-coauthor-network-legend *ngIf="tabIndex === 0" [filter]="filter">
       </famri-coauthor-network-legend>
       <famri-science-map-legend *ngIf="tabIndex === 1" [filter]="filter">
       </famri-science-map-legend>

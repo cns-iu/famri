@@ -41,3 +41,13 @@ export const nodeLabelField = new Field<string>({
     ['label', true]
   ]
 });
+
+export const edgeSizeField = new Field<number>({
+  id: 'edgeSize',
+  label: 'Edge size',
+
+  initialOp: Operator.access('count'),
+  mapping: [
+    ['edgeSize', true]
+  ]
+});

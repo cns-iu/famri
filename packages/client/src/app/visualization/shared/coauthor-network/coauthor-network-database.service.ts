@@ -10,10 +10,13 @@ export class CoauthorNetworkDatabaseService {
   private dataSubscription: Subscription;
   filteredGraph = new BehaviorSubject<CoAuthorGraph>({authors: [], coauthorEdges: []});
   filteredAuthors = new BehaviorSubject<Author[]>([]);
+  filteredCoauthors = new BehaviorSubject<CoAuthorEdge[]>([]);
 
   // defaults
   nodeColorRange = ['#FFFFFF', '#3683BB', '#3182BD'];
   colorLegendEncoding = 'Year of First Publication (TBD)';
+  edgeLegendEncoding = '# Coauthored Publications';
+  edgeSizeRange = [1, 8];
   minColorValueLabel = '2007';
   midColorValueLabel = '2012';
   maxColorValueLabel = '2017';
@@ -29,6 +32,7 @@ export class CoauthorNetworkDatabaseService {
     this.dataSubscription = graph.subscribe((graph) => {
         this.filteredGraph.next(graph);
         this.filteredAuthors.next(graph.authors);
+        this.filteredCoauthors.next(graph.coauthorEdges);
       }
     );
     return graph;
