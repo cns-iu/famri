@@ -29,17 +29,15 @@ export class CoauthorNetworkComponent implements OnInit, OnChanges {
 
   nodeColorRange: string[];
 
-  constructor(private dataService: CoauthorNetworkDatabaseService) { }
+  constructor(private dataService: CoauthorNetworkDatabaseService) {
+    this.graph = this.dataService.filteredGraph.asObservable();
+  }
 
   ngOnInit() {
-    this.graph = this.dataService.filteredGraph;
-
-    // not user facing
     this.nodeSize = nodeSizeField.getBoundField('size');
     this.nodeID = nodeIDField.getBoundField('id');
     this.nodeColor = nodeColorField.getBoundField('color');
     this.nodeLabel = nodeLabelField.getBoundField('label');
-
     this.nodeColorRange = this.dataService.nodeColorRange;
   }
 

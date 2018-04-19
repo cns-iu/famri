@@ -24,7 +24,7 @@ export class CoauthorNetworkLegendComponent implements OnInit {
   maxColorValueLabel: string;
 
   constructor(private dataService: CoauthorNetworkDatabaseService) {
-    this.filteredAuthors = this.dataService.filteredAuthors;
+    this.filteredAuthors = this.dataService.filteredAuthors.asObservable();
   }
 
   ngOnInit() {
