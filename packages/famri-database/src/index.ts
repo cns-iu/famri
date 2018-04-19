@@ -1,5 +1,5 @@
 export { Filter } from './shared/filter';
-export { Author, CoAuthorEdge } from './shared/author';
+export { Author, CoAuthorEdge, CoAuthorGraph } from './shared/author';
 export { Publication } from './shared/publication';
 export { SubdisciplineWeight } from './shared/subdiscipline-weight';
 export { Grant, Location } from './shared/grant';

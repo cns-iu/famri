@@ -16,7 +16,7 @@ export class CoAuthorNetwork {
     for (const pub of this.publications) {
       const year = pub.year;
       const authors: Author[] = (pub.authors || []).map((a) => this.getAuthor(a));
-      const edges = this.getEdges(authors);
+      const edges = this.buildEdges(authors);
 
       for (const author of authors) {
         author.paperCount++;
@@ -35,19 +35,8 @@ export class CoAuthorNetwork {
 
   getEdges(authors: Author[]): CoAuthorEdge[] {
     const seen: any = {};
-    const edges: CoAuthorEdge[] = [];
-    authors.forEach((a1) => {
-      authors.forEach((a2) => {
-        if (a1.id !== a2.id) {
-          const edge = this.getEdge(a1, a2);
-          if (!seen[edge.id]) {
-            seen[edge.id] = true;
-            edges.push(edge);
-          }
-        }
-      });
-    });
-    return edges;
+    for (const a of authors) { seen[a.id] = true; }
+    return this.coauthorEdges.filter(e => seen[e.source] && seen[e.target]);
   }
   getAuthor(id: string): Author {
     let author: Author = this.id2author[id];
@@ -64,12 +53,26 @@ export class CoAuthorNetwork {
     }
     return author;
   }
-  getEdgeId(author1: Author, author2: Author): string {
-    const ids = [author1.id, author2.id];
-    ids.sort();
-    return ids.join('|');
+  private getEdgeId(a1: Author, a2: Author): string {
+    return a1.id < a2.id ? `${a1.id}|${a2.id}` : `${a2.id}|${a1.id}`;
   }
-  getEdge(author1: Author, author2: Author): CoAuthorEdge {
+  private buildEdges(authors: Author[]): CoAuthorEdge[] {
+    const seen: any = {};
+    const edges: CoAuthorEdge[] = [];
+    authors.forEach((a1) => {
+      authors.forEach((a2) => {
+        if (a1.id !== a2.id) {
+          const edgeId = this.getEdgeId(a1, a2);
+          if (!seen[edgeId]) {
+            seen[edgeId] = true;
+            edges.push(this.getEdge(a1, a2));
+          }
+        }
+      });
+    });
+    return edges;
+  }
+  private getEdge(author1: Author, author2: Author): CoAuthorEdge {
     const id = this.getEdgeId(author1, author2);
     let edge: CoAuthorEdge = this.id2edge[id];
     if (!edge) {

@@ -11,11 +11,13 @@ import { DinoGeomapModule } from '@ngx-dino/geomap';
 
 import { SharedModule } from '../shared/shared.module';
 
+import { CoauthorNetworkDatabaseService } from './shared/coauthor-network/coauthor-network-database.service';
 import { CoauthorNetworkComponent } from './coauthor-network/coauthor-network.component';
 import { CoauthorNetworkLegendComponent } from './coauthor-network-legend/coauthor-network-legend.component';
 
 import { ScienceMapComponent } from './science-map/science-map.component';
 import { ScienceMapLegendComponent } from './science-map-legend/science-map-legend.component';
+
 
 import { GeomapDatabaseService } from './shared/geomap/geomap-database.service';
 import { GeomapComponent } from './geomap/geomap.component';
@@ -69,6 +71,7 @@ import { FilterComponent } from './filter/filter.component';
     FilterComponent
   ],
   providers: [
+    CoauthorNetworkDatabaseService,
     GeomapDatabaseService,
     StatisticsService
   ]

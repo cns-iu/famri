@@ -1,12 +1,6 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
 import { BoundField } from '@ngx-dino/core';
 
 import { Filter, Author } from 'famri-database';
@@ -17,14 +11,10 @@ import { nodeSizeField } from '../shared/coauthor-network/coauthor-network-field
 @Component({
   selector: 'famri-coauthor-network-legend',
   templateUrl: './coauthor-network-legend.component.html',
-  styleUrls: ['./coauthor-network-legend.component.sass'],
-  providers: [CoauthorNetworkDatabaseService]
+  styleUrls: ['./coauthor-network-legend.component.sass']
 })
-export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
-  @Input() filter: Partial<Filter> = {};
-  @Output() filterUpdateComplete = new EventEmitter<boolean>();
-
-  filteredAuthors: Author[];
+export class CoauthorNetworkLegendComponent implements OnInit {
+  filteredAuthors: Observable<Author[]>;
   nodeSize: BoundField<string>;
 
   gradient = '';
@@ -33,7 +23,9 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
   midColorValueLabel: string;
   maxColorValueLabel: string;
 
-  constructor(private dataService: CoauthorNetworkDatabaseService) { }
+  constructor(private dataService: CoauthorNetworkDatabaseService) {
+    this.filteredAuthors = this.dataService.filteredAuthors;
+  }
 
   ngOnInit() {
     this.colorLegendTitle = this.dataService.colorLegendEncoding;
@@ -42,24 +34,7 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
     this.maxColorValueLabel = this.dataService.maxColorValueLabel;
     this.gradient = `linear-gradient(to top, ${this.dataService.nodeColorRange.join(', ')})`;
 
-    this.dataService.filteredAuthors.subscribe((authors) => {
-      this.filteredAuthors = authors;
-    });
-
     // not user facing
     this.nodeSize = nodeSizeField.getBoundField('size');
   }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (('filter' in changes) && this.filter) {
-      this.dataService.fetchAuthorData(this.filter).subscribe(
-        undefined, undefined, () => this.filterUpdateComplete.emit(true)
-      );
-
-      this.dataService.fetchCoAuthorData(this.filter).subscribe(
-        undefined, undefined, () => this.filterUpdateComplete.emit(true)
-      );
-    }
-  }
-
 }

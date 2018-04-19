@@ -8,20 +8,20 @@
   <mat-sidenav #sidenav
     class="sidenav"
     mode="side"
-    [opened]="true"
-    (openedChange)="openState = $event">
+    [(opened)]="openState">
     <p class="sidenavTitle">Filters</p>
     <hr>
     <famri-filter (filterChange)="filter = $event"></famri-filter>
-    <br><br><br>
-    <p class="sidenavTitle">Legend</p>
-    <hr>
-    <famri-coauthor-network-legend *ngIf="tabIndex === 0" [filter]="filter">
-    </famri-coauthor-network-legend>
-    <famri-science-map-legend *ngIf="tabIndex === 1" [filter]="filter">
-    </famri-science-map-legend>
-    <famri-geomap-legend *ngIf="tabIndex === 2" [filter]="filter">
-    </famri-geomap-legend>
+    <div [hidden]="tabIndex === 3" class="sidenavLegend">
+      <p class="sidenavTitle">Legend</p>
+      <hr>
+      <famri-coauthor-network-legend *ngIf="tabIndex === 0">
+      </famri-coauthor-network-legend>
+      <famri-science-map-legend *ngIf="tabIndex === 1" [filter]="filter">
+      </famri-science-map-legend>
+      <famri-geomap-legend *ngIf="tabIndex === 2" [filter]="filter">
+      </famri-geomap-legend>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -55,13 +55,14 @@
         </famri-science-map>
       </mat-tab>
       <mat-tab label="Geomap">
-        <famri-geomap [width]="openState ? narrowWidth : wideWidth"
-                      [height]="height"
-                      [filter]="filter">
+        <famri-geomap
+          [width]="openState ? narrowWidth : wideWidth"
+          [height]="height"
+          [filter]="filter">
         </famri-geomap>
       </mat-tab>
       <mat-tab label="Statistics">
-        <famri-statistics [filter]="filter"></famri-statistics>
+        <famri-statistics *ngIf="tabIndex === 3" [filter]="filter"></famri-statistics>
       </mat-tab>
     </mat-tab-group>
   </mat-sidenav-content>

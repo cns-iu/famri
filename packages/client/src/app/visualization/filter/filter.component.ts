@@ -25,7 +25,7 @@ export class FilterComponent implements OnInit {
     padding: [0, 0],
     step: 1,
     range: {
-      min: [2000],
+      min: [2002],
       max: [2018]
     },
     connect: [false, true, false],

@@ -4,11 +4,11 @@
   [nodeColorField]="nodeColor"
   [nodeLabelField]="nodeLabel"
 
-  [dataNodes]="filteredAuthors"
-  [dataEdges]="filteredCoAuthors"
+  [dataNodes]="(graph | async)?.authors"
+  [dataEdges]="(graph | async)?.coauthorEdges"
 
   [nodeColorRange]="nodeColorRange"
-  
+
   [width]="width"
   [height]="height">
 </dino-force-network>

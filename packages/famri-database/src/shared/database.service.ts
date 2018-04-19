@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 
 import { Filter } from '../shared/filter';
 import { Publication } from '../shared/publication';
-import { Author, CoAuthorEdge } from '../shared/author';
+import { Author, CoAuthorEdge, CoAuthorGraph } from '../shared/author';
 import { Grant } from '../shared/grant';
 
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
@@ -38,7 +38,7 @@ export class DatabaseService {
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
     return Observable.of(this.db.authors).map((authors) => {
       return this.filterAuthors(filter);
-    });
+    }).delay(1);
   }
   private filterAuthors(filter: Partial<Filter> = {}): Author[] {
     let filtered = this.db.authors;
@@ -47,18 +47,36 @@ export class DatabaseService {
       for (let yr = filter.year.start; yr <= filter.year.end; yr++) {
         years.push(yr);
       }
-      filtered = this.db.authors.filter((a) => {
+      filtered = filtered.filter((a) => {
         return years.filter((y) => a.paperCountsByYear[y]).length > 0;
       });
     }
-    return filtered.slice(0, 50);
+    if (filter.limit && filter.limit > 0) {
+      filtered = filtered.slice(0, filter.limit);
+    }
+    return filtered;
   }
 
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
-    return Observable.of(this.db.coauthorEdges).map((edges) => {
-      const authors = this.filterAuthors(filter);
-      return this.db.coauthorNetwork.getEdges(authors).filter(e => e.count > 1);
-    });
+    return this.getCoAuthorGraph(filter).map((graph) => graph.coauthorEdges);
+  }
+
+  getCoAuthorGraph(filter: Partial<Filter> = {}): Observable<CoAuthorGraph> {
+    const all: CoAuthorGraph = {
+      authors: this.db.authors,
+      coauthorEdges: this.db.coauthorEdges
+    };
+    return Observable.of(all).map((a) => {
+        const authors = this.filterAuthors(filter);
+        if (authors.length === a.authors.length) {
+          return a;
+        } else {
+          let edges = this.db.coauthorNetwork.getEdges(authors);
+          edges.sort((a,b) => b.count - a.count);
+          // edges = edges.filter(e => e.count > 1);
+          return {authors, coauthorEdges: edges};
+        }
+      }).delay(1);
   }
 
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {

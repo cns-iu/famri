@@ -16,9 +16,8 @@
 
 </div>
 <br>
-<science-map-size-legend 
-  [dataStream]="filteredAuthors"
+<science-map-size-legend
+  [dataStream]="filteredAuthors | async"
   [sizeField]="nodeSize"
   [title]="'# Papers'">
 </science-map-size-legend>
-

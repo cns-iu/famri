@@ -3,13 +3,13 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Author, CoAuthorEdge, Filter, DatabaseService } from 'famri-database';
+import { Author, CoAuthorEdge, CoAuthorGraph, Filter, DatabaseService } from 'famri-database';
 
 @Injectable()
 export class CoauthorNetworkDatabaseService {
   private dataSubscription: Subscription;
+  filteredGraph = new BehaviorSubject<CoAuthorGraph>({authors: [], coauthorEdges: []});
   filteredAuthors = new BehaviorSubject<Author[]>([]);
-  filteredCoAuthors = new BehaviorSubject<any[]>([]);
 
   // defaults
   nodeColorRange = ['#FFFFFF', '#3683BB', '#3182BD'];
@@ -20,28 +20,17 @@ export class CoauthorNetworkDatabaseService {
 
   constructor(private databaseService: DatabaseService) { }
 
-  fetchAuthorData(filter: Partial<Filter> = {}): Observable<Author[]> {
+  fetchData(filter: Partial<Filter> = {}): Observable<CoAuthorGraph> {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
     }
 
-    const authors = this.databaseService.getAuthors(filter);
-    this.dataSubscription = authors.subscribe(
-      (auths) => this.filteredAuthors.next(auths)
+    const graph = this.databaseService.getCoAuthorGraph(filter);
+    this.dataSubscription = graph.subscribe((graph) => {
+        this.filteredGraph.next(graph);
+        this.filteredAuthors.next(graph.authors);
+      }
     );
-    return authors;
+    return graph;
   }
-
-  fetchCoAuthorData(filter: Partial<Filter> = {}): Observable<any[]> {
-    if (this.dataSubscription) {
-      this.dataSubscription.unsubscribe();
-    }
-
-    const coAuthors = this.databaseService.getCoAuthorEdges(filter);
-    this.dataSubscription = coAuthors.subscribe(
-      (coAuths) => this.filteredCoAuthors.next(coAuths)
-    );
-    return coAuthors;
-  }
-
 }

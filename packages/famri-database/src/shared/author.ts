@@ -19,3 +19,8 @@ export interface CoAuthorEdge {
   count: number;
   countsByYear: { [year: number] : number };
 }
+
+export interface CoAuthorGraph {
+  authors: Author[],
+  coauthorEdges: CoAuthorEdge[]
+}
