@@ -2,10 +2,11 @@
 export interface Author {
   id: string;
   paperCount: number;
-  coauthorCount: number;
-
   paperCountsByYear: { [year: number] : number };
-  coauthorCountsByYear: { [year: number] : number };
+
+  coauthorCount: number;
+  coauthors: { [authorId: string] : boolean };
+  coauthorsByYear: { [year: number] : { [authorId: string] : boolean } };
 }
 
 export interface CoAuthorEdge {
