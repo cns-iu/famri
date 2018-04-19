@@ -18,12 +18,16 @@ export class CoAuthorNetwork {
       const authors: Author[] = (pub.authors || []).map((a) => this.getAuthor(a));
       const edges = this.buildEdges(authors);
 
+      const coauthors = {}; authors.forEach(a => coauthors[a.id] = true);
       for (const author of authors) {
         author.paperCount++;
         author.paperCountsByYear[year] = (author.paperCountsByYear[year] || 0) + 1;
+        author.coauthorsByYear[year] = (author.coauthorsByYear[year] || {});
 
-        author.coauthorCount += authors.length - 1;
-        author.coauthorCountsByYear[year] = (author.coauthorCountsByYear[year] || 0) + (authors.length - 1);
+        pub.authors.forEach((authorId) => {
+          author.coauthors[authorId] = true;
+          author.coauthorsByYear[year][authorId] = true;;
+        });
       }
       for (const edge of edges) {
         edge.count++;
@@ -31,6 +35,12 @@ export class CoAuthorNetwork {
       }
     }
     this.authors.sort((a, b) => b.paperCount - a.paperCount);
+    for (const author of this.authors) {
+      author.coauthorCount = 0;
+      for (const authorId in author.coauthors) {
+        author.coauthorCount++;
+      }
+    }
   }
 
   getEdges(authors: Author[]): CoAuthorEdge[] {
@@ -44,10 +54,11 @@ export class CoAuthorNetwork {
       author = this.id2author[id] = <Author>{
         id,
         paperCount: 0,
-        coauthorCount: 0,
-
         paperCountsByYear: {},
-        coauthorCountsByYear: {}
+
+        coauthorCount: 0,
+        coauthors: {},
+        coauthorsByYear: {}
       };
       this.authors.push(author);
     }

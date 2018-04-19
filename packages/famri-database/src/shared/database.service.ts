@@ -58,7 +58,14 @@ export class DatabaseService {
         filtered = filtered.map((a) => {
           const paperCount = years.reduce((acc, y) => (a.paperCountsByYear[y] || 0) + acc, 0);
           if (paperCount > 0) {
-            const coauthorCount = years.reduce((acc, y) => (a.coauthorCountsByYear[y] || 0) + acc, 0);
+            const coauthors = {};
+            years.forEach((yr) => {
+              for (const authorId in (a.coauthorsByYear || {})) {
+                coauthors[authorId] = true;
+              }
+            });
+            let coauthorCount = 0;
+            for (const a in coauthors) { coauthorCount++; }
             return Object.assign(a, {paperCount, coauthorCount});
           } else {
             return null;
