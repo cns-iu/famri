@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import * as d3ScaleChromatic from 'd3-scale-chromatic';
+
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -13,13 +15,10 @@ export class CoauthorNetworkDatabaseService {
   filteredCoauthors = new BehaviorSubject<CoAuthorEdge[]>([]);
 
   // defaults
-  nodeColorRange = ['#FFFFFF', '#3683BB', '#3182BD'];
+  nodeColorRange = ['#FDD3A1', '#E9583D', '#7F0000'];
   colorLegendEncoding = '# Co-Authors';
   edgeLegendEncoding = '# Co-Authored Publications';
   edgeSizeRange = [1, 8];
-  minColorValueLabel = '2007';
-  midColorValueLabel = '2012';
-  maxColorValueLabel = '2017';
 
   constructor(private databaseService: DatabaseService) { }
 

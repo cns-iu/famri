@@ -37,7 +37,7 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
 
   nodeSize: BoundField<string>;
   edgeSize: BoundField<number>;
-  colorLabelEncoding: BoundField<number>;
+  nodeColorEncoding: BoundField<number>;
 
   gradient = '';
   colorLegendTitle: string;
@@ -71,7 +71,15 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
     // not user facing
     this.nodeSize = nodeSizeField.getBoundField('size');
     this.edgeSize = edgeSizeField.getBoundField('edgeSize');
-    this.colorLabelEncoding = colorEncodingField.getBoundField('colorEncoding');
+    this.nodeColorEncoding = colorEncodingField.getBoundField('colorEncoding');
+
+    this.filteredCoauthors.subscribe((coauthorEdges) => {
+      this.updateEdgeLegendLabels(coauthorEdges);
+      this.updateEdgeLegendSizes(coauthorEdges);
+    });
+    this.filteredAuthors.subscribe((authors) => {
+      this.updateColorLegendLabels(authors);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -79,13 +87,6 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
       const filter: Partial<Filter> = Object.assign({}, this.filter, {limit: this.numCoAuthors});
       this.dataService.fetchData(filter).subscribe(undefined, undefined, () => {
         this.filterUpdateComplete.emit(true);
-      });
-      this.filteredCoauthors.subscribe((coauthorEdges) => {
-        this.updateEdgeLegendLabels(coauthorEdges);
-        this.updateEdgeLegendSizes(coauthorEdges);
-      });
-      this.filteredAuthors.subscribe((authors) => {
-        this.updateColorLegendLabels(authors);
       });
     }
   }
@@ -110,11 +111,11 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
   }
 
   updateColorLegendLabels(authors: Author[]) {
-    // this.maxCo = Math.round(d3Array.max(coauthorEdges, (d: any) => this.edgeSize.get(d)));
-    // this.minEdge = Math.round(d3Array.min(coauthorEdges, (d: any) => this.edgeSize.get(d)));
-    // this.midEdge = Math.round((this.maxEdge + this.minEdge) / 2);
-    // this.maxEdgeLegendLabel = (!isNaN(this.maxEdge)) ? this.maxEdge.toString() : '';
-    // this.midEdgeLegendLabel = (!isNaN(this.midEdge)) ? this.midEdge.toString() : '';
-    // this.minEdgeLegendLabel = (!isNaN(this.minEdge)) ? this.minEdge.toString() : '';
+    const maxColorValue = Math.round(d3Array.max(authors, (d: any) => this.nodeColorEncoding.get(d)));
+    const minColorValue = Math.round(d3Array.min(authors, (d: any) => this.nodeColorEncoding.get(d)));
+    const midColorValue = Math.round((maxColorValue + minColorValue) / 2);
+    this.maxColorValueLabel = (!isNaN(maxColorValue)) ? maxColorValue.toString() : '';
+    this.midColorValueLabel = (!isNaN(midColorValue)) ? midColorValue.toString() : '';
+    this.minColorValueLabel = (!isNaN(minColorValue)) ? minColorValue.toString() : '';
   }
 }
