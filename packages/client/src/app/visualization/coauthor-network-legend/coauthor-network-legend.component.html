@@ -1,6 +1,6 @@
 <div class="legend-container">
   <div class="gradient-title"><b>Node Color</b></div>
-  <div id="gradient-encoding">{{colorLegendTitle}}</div><br>
+  <div id="gradient-encoding">{{colorLegendTitle}}</div>
   <div class="gradient-container">
     <div class="gradient-bar" [style.background]="gradient"></div>
     <div class="gradient-labels">
@@ -13,7 +13,6 @@
   </div>
 <br>
 </div>
-<br>
 <science-map-size-legend
   [dataStream]="filteredAuthors | async"
   [sizeField]="nodeSize"

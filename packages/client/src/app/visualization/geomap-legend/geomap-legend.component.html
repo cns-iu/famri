@@ -1,6 +1,6 @@
 <div class="legend-container">
   <div class="title">State Color</div>
-  <div class="subtitle"># Grants by State</div><br>
+  <div class="subtitle"># Grants by State</div>
   <div class="gradient-container">
     <div class="gradient-bar" [style.background]="gradient"></div>
     <div class="gradient-labels">
@@ -11,13 +11,13 @@
       <div>0 Grants</div>
     </div>
   </div>
-  <br />
+  <br>
 
   <science-map-size-legend [dataStream]="sizeValues"
                            [sizeField]="sizeField"
                            [title]="'# Publications Associated with Location'">
   </science-map-size-legend>
-  <br />
+  <br>
 
   <div class="title"># Without a Location</div>
   <div class="value">{{noLocationCount | number}} Grants</div>
