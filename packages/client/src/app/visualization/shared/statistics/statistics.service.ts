@@ -55,6 +55,7 @@ export class StatisticsService {
     result.nPublications = publications.length;
     result.nAuthors = authors.length;
     result.nGrants = grants.length;
+    result.nInstitutions = Set(grants.map((g) => g.institution.id)).size;
 
     result.avgAuthorsPerPublication = publications.reduce((sum, pub) => {
       return sum + pub.authors.length;
@@ -100,6 +101,32 @@ export class StatisticsService {
     });
 
     result.nInstitutionsByYear = institutionsByYear.entrySeq()
+      .map(([year, set]) => ({year, count: set.size})).toArray()
+      .sort((a, b) => a.year - b.year);
+
+    // nGrantsByYear
+    const grantsByYear = Map<number, Set<string>>().withMutations((map) => {
+      grants.forEach((g) => {
+        map.updateIn([g.year], (set: Set<string> = Set()) => {
+          return set.add(g.id);
+        });
+      });
+    });
+
+    result.nGrantsByYear = grantsByYear.entrySeq()
+      .map(([year, set]) => ({year, count: set.size})).toArray()
+      .sort((a, b) => a.year - b.year);
+
+    // nPublicationsByYear
+    const publicationsByYear = Map<number, Set<number>>().withMutations((map) => {
+      publications.forEach((pub) => {
+        map.updateIn([pub.year], (set: Set<number> = Set()) => {
+          return set.add(pub.id);
+        });
+      });
+    });
+
+    result.nPublicationsByYear = publicationsByYear.entrySeq()
       .map(([year, set]) => ({year, count: set.size})).toArray()
       .sort((a, b) => a.year - b.year);
 

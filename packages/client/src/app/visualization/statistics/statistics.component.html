@@ -4,6 +4,16 @@
     <hr />
     <div class="value-container">
       <div class="value-group">
+        <div class="subtitle"># Grants</div>
+        <div class="value">{{statistics.nGrants}}</div>
+      </div>
+
+      <div class="value-group">
+        <div class="subtitle"># Institutions</div>
+        <div class="value">{{statistics.nInstitutions}}</div>
+      </div>
+
+      <div class="value-group">
         <div class="subtitle"># Publications</div>
         <div class="value">{{statistics.nPublications}}</div>
       </div>
@@ -11,11 +21,6 @@
       <div class="value-group">
         <div class="subtitle"># Authors</div>
         <div class="value">{{statistics.nAuthors}}</div>
-      </div>
-
-      <div class="value-group">
-        <div class="subtitle"># Grants</div>
-        <div class="value">{{statistics.nGrants}}</div>
       </div>
 
       <div class="value-group">
@@ -28,7 +33,7 @@
   </div>
 
   <div class="network">
-    <div class="title">Network Statistics</div>
+    <div class="title">Co-Author Network Statistics</div>
     <hr>
     <div class="value-container">
       <div class="value-group">
@@ -46,11 +51,12 @@
   <div class="other">
     <div class="title">Other Statistics</div>
     <hr>
+
     <div class="value-container">
       <div class="value-group">
-        <div class="subtitle"># Authors by Year</div>
+        <div class="subtitle"># Grants by Year</div>
         <div class="table-container">
-          <dino-datatable class="value" [data]="statistics.nAuthorsByYear" [fields]="nAuthorsByYearFields">
+          <dino-datatable class="value" [data]="statistics.nGrantsByYear" [fields]="nGrantsByYearFields">
           </dino-datatable>
         </div>
       </div>
@@ -61,6 +67,26 @@
         <div class="subtitle"># Institutions by Year</div>
         <div class="table-container">
           <dino-datatable class="value" [data]="statistics.nInstitutionsByYear" [fields]="nInstitutionsByYearFields">
+          </dino-datatable>
+        </div>
+      </div>
+
+      <div class="filler"></div>
+
+      <div class="value-group">
+        <div class="subtitle"># Publications by Year</div>
+        <div class="table-container">
+          <dino-datatable class="value" [data]="statistics.nPublicationsByYear" [fields]="nPublicationsByYearFields">
+          </dino-datatable>
+        </div>
+      </div>
+
+      <div class="filler"></div>
+
+      <div class="value-group">
+        <div class="subtitle"># Authors by Year</div>
+        <div class="table-container">
+          <dino-datatable class="value" [data]="statistics.nAuthorsByYear" [fields]="nAuthorsByYearFields">
           </dino-datatable>
         </div>
       </div>

@@ -8,7 +8,8 @@ import { Filter } from 'famri-database';
 
 import { Statistics } from '../shared/statistics/statistics';
 import {
-  AuthorsByYearFields, InstitutionsByYearFields
+  AuthorsByYearFields, InstitutionsByYearFields,
+  GrantsByYearFields, PublicationsByYearFields
 } from '../shared/statistics/statistics-fields';
 import { StatisticsService } from '../shared/statistics/statistics.service';
 
@@ -32,6 +33,16 @@ export class StatisticsComponent implements OnInit, OnChanges {
   nInstitutionsByYearFields = [
     InstitutionsByYearFields.yearField.getBoundField('default'),
     InstitutionsByYearFields.institutionCountField.getBoundField('default')
+  ];
+
+  nGrantsByYearFields = [
+    GrantsByYearFields.yearField.getBoundField('default'),
+    GrantsByYearFields.grantCountField.getBoundField('default')
+  ];
+
+  nPublicationsByYearFields = [
+    PublicationsByYearFields.yearField.getBoundField('default'),
+    PublicationsByYearFields.publicationCountField.getBoundField('default')
   ];
 
   constructor(private service: StatisticsService) {

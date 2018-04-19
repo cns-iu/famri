@@ -39,3 +39,25 @@ export namespace InstitutionsByYearFields {
     mapping: {default: textDataOp}
   });
 }
+
+export namespace GrantsByYearFields {
+  export const yearField = commonYearField;
+  export const grantCountField = new Field({
+    id: 'gcount',
+    label: '# Grants',
+
+    initialOp: Operator.access('count'),
+    mapping: {default: textDataOp}
+  });
+}
+
+export namespace PublicationsByYearFields {
+  export const yearField = commonYearField;
+  export const publicationCountField = new Field({
+    id: 'pcount',
+    label: '# Publications',
+
+    initialOp: Operator.access('count'),
+    mapping: {default: textDataOp}
+  });
+}
