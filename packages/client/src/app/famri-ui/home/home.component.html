@@ -13,9 +13,11 @@
     <p class="sidenavTitle">Filters</p>
     <hr>
     <famri-filter (filterChange)="filter = $event"></famri-filter>
-    <br><br><br>
-    <p class="sidenavTitle">Legend</p>
-    <hr>
+    <div *ngIf="tabIndex !== 3">
+      <br><br><br>
+      <p class="sidenavTitle">Legend</p>
+      <hr>
+    </div>
     <famri-coauthor-network-legend *ngIf="tabIndex === 0" [filter]="filter">
     </famri-coauthor-network-legend>
     <famri-science-map-legend *ngIf="tabIndex === 1" [filter]="filter">

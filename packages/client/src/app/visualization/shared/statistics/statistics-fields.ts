@@ -28,3 +28,14 @@ export namespace AuthorsByYearFields {
     mapping: {default: textDataOp}
   });
 }
+
+export namespace InstitutionsByYearFields {
+  export const yearField = commonYearField;
+  export const institutionCountField = new Field({
+    id: 'icount',
+    label: '# Institutions',
+
+    initialOp: Operator.access('count'),
+    mapping: {default: textDataOp}
+  });
+}
