@@ -66,9 +66,25 @@ export class StatisticsService {
       });
     });
 
-    result.nAuthorsByYear = authorsByYear.entrySeq().map(([year, set]) => {
-      return {year, count: set.size};
-    }).toArray().sort((a, b) => a.year - b.year);
+    result.nAuthorsByYear = authorsByYear.entrySeq()
+      .map(([year, set]) => ({year, count: set.size})).toArray()
+      .sort((a, b) => a.year - b.year);
+
+    // nInstitutionsByYear
+    const institutionsByYear = Map<number, Set<number>>().withMutations((map) => {
+      publications.forEach((pub) => {
+        const grant: Grant = pub.grant;
+        if (grant !== undefined) {
+          map.updateIn([pub.year], (set: Set<number> = Set()) => {
+            return set.add(grant.institution.id);
+          });
+        }
+      });
+    });
+
+    result.nInstitutionsByYear = institutionsByYear.entrySeq()
+      .map(([year, set]) => ({year, count: set.size})).toArray()
+      .sort((a, b) => a.year - b.year);
 
     // TODO
     return result;
