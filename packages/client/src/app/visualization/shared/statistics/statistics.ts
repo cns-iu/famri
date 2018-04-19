@@ -10,14 +10,12 @@ export interface Statistics {
   nGrants: number;
 
   avgAuthorsPerPublication: number;
-  // More?
 
   // Network measures
-  // TODO
+  avgDegree: number;
+  maxDegree: number;
 
   // Other measures
   nAuthorsByYear: CountByYear[];
-
   nInstitutionsByYear: CountByYear[];
-  // More?
 }
