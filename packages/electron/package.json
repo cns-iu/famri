@@ -11,8 +11,9 @@
     "start-prod": "yarn build --prod && yarn electron",
     "electron": "electron .",
     "electron-packager": "electron-packager . --out=build --ignore=node_modules --ignore=build --overwrite",
-    "build-all": "rimraf build && yarn build --prod && yarn electron-packager --all",
-    "build-windows": "rimraf build/*-win32-* && yarn build --prod && yarn electron-packager --platform=win32 && zip -r build/FAMRI-win32-x64.zip build/FAMRI-win32-x64"
+    "build-all": "rimraf build && yarn build --prod && yarn electron-packager --all && yarn zip-windows",
+    "build-windows": "rimraf build/*-win32-* && yarn build --prod && yarn electron-packager --platform=win32 && yarn zip-windows",
+    "zip-windows": "rm -f build/FAMRI-win32-x64.zip && zip -9 -r build/FAMRI-win32-x64.zip build/FAMRI-win32-x64 && mv build/FAMRI-win32-x64.zip ../../raw-data/sci2"
   },
   "devDependencies": {
     "electron": "^1.8.4",

@@ -4,8 +4,9 @@ const zipcodes = require('zipcodes');
 import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
 import { issnLookup, journalLookup, disciplineLookup } from './science-mapper';
+import { CoAuthorNetwork } from '../shared/coauthor-network';
 
-import { GRANTS, CLEAN_PUBS, PUBS, DB_JSON } from './options';
+import { GRANTS, CLEAN_PUBS, PUBS, COAUTH_JSON, DB_JSON } from './options';
 
 function readXLS(inputFile: string, sheetName?: string): any[] {
   const wb = XLSX.readFile(inputFile);
@@ -300,6 +301,12 @@ const pubsDBProcessor = Operator.combine({
 });
 const publications: any[] = pubs.map(pubsDBProcessor.getter);
 
+const graph = new CoAuthorNetwork(publications);
+graph.coauthorEdges.forEach((e) => {
+  delete e.author1;
+  delete e.author2;
+});
+
 const PRINT_INFO = true;
 if (PRINT_INFO) {
   const sciPubs = publications.filter((pub) => pub.subdisciplines && pub.subdisciplines.length > 0);
@@ -314,6 +321,9 @@ if (PRINT_INFO) {
     publications.filter((p: any) => !!p.grantId).length - sciPubs.filter((p: any) => !!p.grantId).length
   );
   console.log('Publications:', publications.length, 'Grants:', grants.length);
+
+  console.log('Authors', graph.authors.length);
+  console.log('Co-Author Edges', graph.coauthorEdges.length);
 }
 
 const db: any = {
@@ -322,3 +332,4 @@ const db: any = {
 };
 
 writeJSON(DB_JSON, db);
+writeJSON(COAUTH_JSON, {nodes: graph.authors, edges: graph.coauthorEdges});

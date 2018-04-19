@@ -32,7 +32,7 @@ export const pointPositionField = new Field<[number, number]>({
   label: 'Point Latitude and Longitude',
 
   mapping: {
-    default: Operator.access('pi.location')
+    default: Operator.access('location')
       .map((o) => o || invalidLatLongObj)
       .map(({latitude, longitude}): [number, number] => [latitude, longitude]),
     initial: Operator.access('initialLocation')
@@ -49,13 +49,6 @@ export const pointShapeField = new Field<string>({
   label: 'Point Shape',
 
   mapping: {circle: Operator.constant('circle')}
-});
-
-export const pointSizeField = new Field<number>({
-  id: 'psize',
-  label: 'Point Size',
-
-  mapping: {fixed: Operator.constant(30)}
 });
 
 export const pointColorField = new Field<string>({
