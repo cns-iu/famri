@@ -1,11 +1,18 @@
 import {
   Component,
+  EventEmitter,
   Input,
-  OnInit
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  Output
 } from '@angular/core';
+import { BoundField } from '@ngx-dino/core';
 
-import { Filter } from 'famri-database';
+import { Filter, Author } from 'famri-database';
+
 import { CoauthorNetworkDatabaseService } from '../shared/coauthor-network/coauthor-network-database.service';
+import { nodeSizeField } from '../shared/coauthor-network/coauthor-network-fields';
 
 @Component({
   selector: 'famri-coauthor-network-legend',
@@ -13,8 +20,13 @@ import { CoauthorNetworkDatabaseService } from '../shared/coauthor-network/coaut
   styleUrls: ['./coauthor-network-legend.component.sass'],
   providers: [CoauthorNetworkDatabaseService]
 })
-export class CoauthorNetworkLegendComponent implements OnInit {
+export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
   @Input() filter: Partial<Filter> = {};
+  @Output() filterUpdateComplete = new EventEmitter<boolean>();
+
+  filteredAuthors: Author[];
+  nodeSize: BoundField<string>;
+
   gradient = '';
   colorLegendTitle: string;
   minColorValueLabel: string;
@@ -29,6 +41,25 @@ export class CoauthorNetworkLegendComponent implements OnInit {
     this.midColorValueLabel = this.dataService.midColorValueLabel;
     this.maxColorValueLabel = this.dataService.maxColorValueLabel;
     this.gradient = `linear-gradient(to top, ${this.dataService.nodeColorRange.join(', ')})`;
+
+    this.dataService.filteredAuthors.subscribe((authors) => {
+      this.filteredAuthors = authors;
+    });
+
+    // not user facing
+    this.nodeSize = nodeSizeField.getBoundField('size');
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (('filter' in changes) && this.filter) {
+      this.dataService.fetchAuthorData(this.filter).subscribe(
+        undefined, undefined, () => this.filterUpdateComplete.emit(true)
+      );
+
+      this.dataService.fetchCoAuthorData(this.filter).subscribe(
+        undefined, undefined, () => this.filterUpdateComplete.emit(true)
+      );
+    }
   }
 
 }

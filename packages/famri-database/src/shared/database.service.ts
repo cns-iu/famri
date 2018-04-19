@@ -57,7 +57,7 @@ export class DatabaseService {
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
     return Observable.of(this.db.coauthorEdges).map((edges) => {
       const authors = this.filterAuthors(filter);
-      return this.db.coauthorNetwork.getEdges(authors);
+      return this.db.coauthorNetwork.getEdges(authors).filter(e => e.count > 1);
     });
   }
 
