@@ -1,7 +1,7 @@
 <dino-science-map
   [subdisciplineSizeField]="subdisciplineSize"
   [subdisciplineIDField]="subdisciplineID"
-  [data]="filteredSubdisciplines"
+  [data]="filteredSubdisciplines | async"
   [width]="width"
   [height]="height"
   (nodeClicked)="nodeClicked.emit($event)">
