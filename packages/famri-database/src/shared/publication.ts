@@ -1,7 +1,5 @@
 import { SubdisciplineWeight } from './subdiscipline-weight';
 
-export interface Grant { }
-
 export interface Publication {
   id: number;
   title: string;
@@ -13,5 +11,5 @@ export interface Publication {
   subdisciplines: SubdisciplineWeight[];
 
   grantId?: number;
-  grant?: Grant;
+  grant?: any;
 }
