@@ -2,6 +2,7 @@ const csvWriter = require('csv-write-stream')
 const fs = require('fs');
 const unidecode = require('unidecode');
 
+const COAUTH_JSON = '../../raw-data/coauthor-network.json';
 const DB_JSON = '../../raw-data/database.json';
 const OUT_DIR = '../../raw-data/sci2';
 
@@ -29,6 +30,11 @@ const id2grant = {};
 const id2pub = {};
 db.grants.forEach((g) => id2grant[g.id] = g);
 db.publications.forEach((p) => id2pub[p.ref_id] = p);
+
+const years = [];
+for (let i=2002; i <= 2018; i++) { years.push(i); }
+const graph = readJSON(COAUTH_JSON);
+id2author = {};
 
 function pubMapper(data) {
   const pub = Object.assign({}, data);
@@ -69,9 +75,41 @@ function grantMapper(data) {
   }
   return grant;
 }
+function authorMapper(data) {
+  for (const year of years) {
+    data[`paperCount_${year}`] = data.paperCountsByYear[year] || 0;
+    data[`coauthorCount_${year}`] = data.coauthorCountsByYear[year] || 0;
+  }
+  delete data.paperCountsByYear;
+  delete data.coauthorCountsByYear;
+  return data;
+}
+function coauthorEdgeMapper(data) {
+  for (const year of years) {
+    data[`count_${year}`] = data.countsByYear[year] || 0;
+  }
+  delete data.countsByYear;
+
+  // for (const field of ['source', 'target']) {
+  //   const author = id2author[data[field]]
+  //   for (const f in author) {
+  //     data[`${field}_${f}`] = author[f];
+  //   }
+  // }
+  return data;
+}
 
 console.log(db.grants.length);
 console.log(db.publications.length);
 
 writeCSV(`${OUT_DIR}/publications.csv`, pubMapper, db.publications);
 writeCSV(`${OUT_DIR}/grants.csv`, grantMapper, db.grants);
+
+const authors = graph.nodes.map(authorMapper);
+authors.forEach((a) => id2author[a.id] = a);
+
+console.log(graph.nodes.length);
+console.log(graph.edges.length);
+
+writeCSV(`${OUT_DIR}/coauthor.nodes.csv`, (a) => a, authors);
+writeCSV(`${OUT_DIR}/coauthor.edges.csv`, coauthorEdgeMapper, graph.edges);
