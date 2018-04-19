@@ -51,3 +51,13 @@ export const edgeSizeField = new Field<number>({
     ['edgeSize', true]
   ]
 });
+
+export const colorEncodingField = new Field<number>({
+  id: 'colorEncoding',
+  label: 'Color Encoding',
+
+  initialOp: Operator.access('coauthorCount'),
+  mapping: [
+    ['colorEncoding', true]
+  ]
+});

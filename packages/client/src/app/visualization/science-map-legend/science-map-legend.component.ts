@@ -28,6 +28,8 @@ export class ScienceMapLegendComponent implements OnInit, OnChanges {
   subdisciplineSize: BoundField<string>;
   filteredSubdisciplines: SubdisciplineWeight[];
 
+  nodeSizeEncoding = '# Fractionally Assigned Papers';
+
   constructor(private dataService: ScienceMapDatabaseService) { }
 
   ngOnInit() {

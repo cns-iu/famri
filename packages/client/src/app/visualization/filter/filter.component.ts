@@ -20,13 +20,13 @@ export class FilterComponent implements OnInit {
   @Output() filterChange = new EventEmitter<Partial<Filter>>();
 
   yearSliderConfig = {
-    start: [2000, 2018],
+    start: [2000, 2017],
     margin: 0,
     padding: [0, 0],
     step: 1,
     range: {
       min: [2002],
-      max: [2018]
+      max: [2017]
     },
     connect: [false, true, false],
     tooltips: [true, true],

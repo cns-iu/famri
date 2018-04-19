@@ -14,8 +14,8 @@ export class CoauthorNetworkDatabaseService {
 
   // defaults
   nodeColorRange = ['#FFFFFF', '#3683BB', '#3182BD'];
-  colorLegendEncoding = 'Year of First Publication (TBD)';
-  edgeLegendEncoding = '# Coauthored Publications';
+  colorLegendEncoding = '# Co-Authors';
+  edgeLegendEncoding = '# Co-Authored Publications';
   edgeSizeRange = [1, 8];
   minColorValueLabel = '2007';
   midColorValueLabel = '2012';

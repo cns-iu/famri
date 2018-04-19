@@ -19,7 +19,7 @@ import { BoundField } from '@ngx-dino/core';
 import { Filter, Author, CoAuthorEdge } from 'famri-database';
 
 import { CoauthorNetworkDatabaseService } from '../shared/coauthor-network/coauthor-network-database.service';
-import { nodeSizeField, edgeSizeField } from '../shared/coauthor-network/coauthor-network-fields';
+import { nodeSizeField, edgeSizeField, colorEncodingField } from '../shared/coauthor-network/coauthor-network-fields';
 
 @Component({
   selector: 'famri-coauthor-network-legend',
@@ -37,6 +37,7 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
 
   nodeSize: BoundField<string>;
   edgeSize: BoundField<number>;
+  colorLabelEncoding: BoundField<number>;
 
   gradient = '';
   colorLegendTitle: string;
@@ -52,6 +53,7 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
   minEdge: number;
 
   edgeSizeScale: any;
+  numCoauthorScale: any;
 
   constructor(private dataService: CoauthorNetworkDatabaseService) {
     this.filteredAuthors = this.dataService.filteredAuthors.asObservable();
@@ -61,14 +63,15 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.colorLegendTitle = this.dataService.colorLegendEncoding;
     this.edgeLegendTitle = this.dataService.edgeLegendEncoding;
-    this.minColorValueLabel = this.dataService.minColorValueLabel;
-    this.midColorValueLabel = this.dataService.midColorValueLabel;
-    this.maxColorValueLabel = this.dataService.maxColorValueLabel;
+    this.minColorValueLabel = '';
+    this.midColorValueLabel = '';
+    this.maxColorValueLabel = '';
     this.gradient = `linear-gradient(to top, ${this.dataService.nodeColorRange.join(', ')})`;
 
     // not user facing
     this.nodeSize = nodeSizeField.getBoundField('size');
     this.edgeSize = edgeSizeField.getBoundField('edgeSize');
+    this.colorLabelEncoding = colorEncodingField.getBoundField('colorEncoding');
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -80,6 +83,9 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
       this.filteredCoauthors.subscribe((coauthorEdges) => {
         this.updateEdgeLegendLabels(coauthorEdges);
         this.updateEdgeLegendSizes(coauthorEdges);
+      });
+      this.filteredAuthors.subscribe((authors) => {
+        this.updateColorLegendLabels(authors);
       });
     }
   }
@@ -103,4 +109,12 @@ export class CoauthorNetworkLegendComponent implements OnInit, OnChanges {
     d3Selection.select('#minEdge').select('line').attr('stroke-width', this.edgeSizeScale(this.minEdge));
   }
 
+  updateColorLegendLabels(authors: Author[]) {
+    // this.maxCo = Math.round(d3Array.max(coauthorEdges, (d: any) => this.edgeSize.get(d)));
+    // this.minEdge = Math.round(d3Array.min(coauthorEdges, (d: any) => this.edgeSize.get(d)));
+    // this.midEdge = Math.round((this.maxEdge + this.minEdge) / 2);
+    // this.maxEdgeLegendLabel = (!isNaN(this.maxEdge)) ? this.maxEdge.toString() : '';
+    // this.midEdgeLegendLabel = (!isNaN(this.midEdge)) ? this.midEdge.toString() : '';
+    // this.minEdgeLegendLabel = (!isNaN(this.minEdge)) ? this.minEdge.toString() : '';
+  }
 }

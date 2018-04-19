@@ -26,7 +26,7 @@
 
   <mat-sidenav-content>
     <mat-tab-group #tabs>
-      <mat-tab label="Co-author Network">
+      <mat-tab label="Co-Author Network">
         <famri-coauthor-network *ngIf="openState"
           [width]="narrowWidth"
           [height]="height"
@@ -54,7 +54,7 @@
           (filterUpdateComplete)="filtersUpdating = false">
         </famri-science-map>
       </mat-tab>
-      <mat-tab label="Geomap">
+      <mat-tab label="US Map">
         <famri-geomap
           [width]="openState ? narrowWidth : wideWidth"
           [height]="height"
