@@ -1,5 +1,6 @@
 const fs = require('fs');
 const zipcodes = require('zipcodes');
+const unidecode = require('unidecode');
 
 import * as XLSX from 'xlsx';
 import { Operator } from '@ngx-dino/core/operators';
@@ -177,7 +178,7 @@ const pubsProcessor = Operator.combine({
   'title': a('title'),
   'journalName': a('journal'),
   'address': a('address'),
-  'authors': a('authors'),
+  'authors': a('authors').map((authors) => authors.map(unidecode)),
   'pages': a('pages'),
   'volume': a('volume'),
   'number': a('number'),

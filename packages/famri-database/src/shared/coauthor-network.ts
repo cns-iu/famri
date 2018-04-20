@@ -20,6 +20,7 @@ export class CoAuthorNetwork {
 
       const coauthors = {}; authors.forEach(a => coauthors[a.id] = true);
       for (const author of authors) {
+        author.totalPaperCount++;
         author.paperCount++;
         author.paperCountsByYear[year] = (author.paperCountsByYear[year] || 0) + 1;
         author.coauthorsByYear[year] = (author.coauthorsByYear[year] || {});
@@ -37,8 +38,10 @@ export class CoAuthorNetwork {
     this.authors.sort((a, b) => b.paperCount - a.paperCount);
     for (const author of this.authors) {
       author.coauthorCount = 0;
+      author.totalCoAuthorCount = 0;
       for (const authorId in author.coauthors) {
         author.coauthorCount++;
+        author.totalCoAuthorCount++;
       }
     }
   }
@@ -53,9 +56,11 @@ export class CoAuthorNetwork {
     if (!author) {
       author = this.id2author[id] = <Author>{
         id,
+        totalPaperCount: 0,
         paperCount: 0,
         paperCountsByYear: {},
 
+        totalCoAuthorCount: 0,
         coauthorCount: 0,
         coauthors: {},
         coauthorsByYear: {}

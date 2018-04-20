@@ -1,9 +1,11 @@
 
 export interface Author {
   id: string;
+  totalPaperCount: number;
   paperCount: number;
   paperCountsByYear: { [year: number] : number };
 
+  totalCoAuthorCount: number;
   coauthorCount: number;
   coauthors: { [authorId: string] : boolean };
   coauthorsByYear: { [year: number] : { [authorId: string] : boolean } };

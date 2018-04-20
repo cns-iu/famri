@@ -78,10 +78,13 @@ function grantMapper(data) {
 function authorMapper(data) {
   for (const year of years) {
     data[`paperCount_${year}`] = data.paperCountsByYear[year] || 0;
-    data[`coauthorCount_${year}`] = data.coauthorCountsByYear[year] || 0;
+    data[`coauthorCount_${year}`] = 0;
+    for (const coauthor in data.coauthorsByYear[year]) {
+      data[`coauthorCount_${year}`]++
+    }
   }
   delete data.paperCountsByYear;
-  delete data.coauthorCountsByYear;
+  delete data.coauthorsByYear;
   return data;
 }
 function coauthorEdgeMapper(data) {

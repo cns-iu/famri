@@ -86,7 +86,7 @@ export class StatisticsService {
 
     result.nAuthorsByYear = authorsByYear.entrySeq()
       .map(([year, set]) => ({year, count: set.size})).toArray()
-      .sort((a, b) => a.year - b.year);
+      .sort((a, b) => b.year - a.year);
 
     // nInstitutionsByYear
     const institutionsByYear = Map<number, Set<number>>().withMutations((map) => {
@@ -102,7 +102,7 @@ export class StatisticsService {
 
     result.nInstitutionsByYear = institutionsByYear.entrySeq()
       .map(([year, set]) => ({year, count: set.size})).toArray()
-      .sort((a, b) => a.year - b.year);
+      .sort((a, b) => b.year - a.year);
 
     // nGrantsByYear
     const grantsByYear = Map<number, Set<string>>().withMutations((map) => {
@@ -115,7 +115,7 @@ export class StatisticsService {
 
     result.nGrantsByYear = grantsByYear.entrySeq()
       .map(([year, set]) => ({year, count: set.size})).toArray()
-      .sort((a, b) => a.year - b.year);
+      .sort((a, b) => b.year - a.year);
 
     // nPublicationsByYear
     const publicationsByYear = Map<number, Set<number>>().withMutations((map) => {
@@ -128,7 +128,7 @@ export class StatisticsService {
 
     result.nPublicationsByYear = publicationsByYear.entrySeq()
       .map(([year, set]) => ({year, count: set.size})).toArray()
-      .sort((a, b) => a.year - b.year);
+      .sort((a, b) => b.year - a.year);
 
     return result;
   }

@@ -13,6 +13,8 @@ import { Grant } from '../shared/grant';
 import { SubdisciplineWeight } from '../shared/subdiscipline-weight';
 import { database } from './database';
 
+export const DEFAULT_FILTER: Partial<Filter> = {year: {start: 2002, end: 2017}};
+
 function sumAgg<T>(items: T[], itemKeyField: string, keyField: string, valueField: string): Promise<{[key: string]: number}> {
   const acc: any = {};
   for (const innerItem of items) {
@@ -36,12 +38,13 @@ export class DatabaseService {
   constructor() { }
 
   getAuthors(filter: Partial<Filter> = {}): Observable<Author[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     return Observable.of(this.db.authors).map((authors) => {
       return this.filterAuthors(filter);
     }).delay(1);
   }
   private filterAuthors(filter: Partial<Filter> = {}): Author[] {
-    filter = Object.assign({year: {start:2000, end: 2018}}, filter);
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     let filtered = this.db.authors;
     if (filter.year) {
       const years = [];
@@ -82,10 +85,12 @@ export class DatabaseService {
   }
 
   getCoAuthorEdges(filter: Partial<Filter> = {}): Observable<CoAuthorEdge[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     return this.getCoAuthorGraph(filter).map((graph) => graph.coauthorEdges);
   }
 
   getCoAuthorGraph(filter: Partial<Filter> = {}): Observable<CoAuthorGraph> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     const all: CoAuthorGraph = {
       authors: this.db.authors,
       coauthorEdges: this.db.coauthorEdges
@@ -118,6 +123,7 @@ export class DatabaseService {
   }
 
   getGrants(filter: Partial<Filter> = {}): Observable<Grant[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     return Observable.of(this.db.grants).map((grants) => {
       return !filter.year ? grants : grants.filter((g) => {
         return filter.year.start <= g.year && g.year <= filter.year.end;
@@ -126,6 +132,7 @@ export class DatabaseService {
   }
 
   getPublications(filter: Partial<Filter> = {}): Observable<Publication[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     if(filter.year) {
       const filteredPublications = this.db.publications.filter((pubs: any) => {
         return (pubs.year >= filter.year.start && pubs.year <= filter.year.end)? pubs: null;
@@ -137,6 +144,7 @@ export class DatabaseService {
   }
 
   getSubdisciplines(filter: Partial<Filter> = {}): Observable<SubdisciplineWeight[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     return this.getPublications(filter).map((publications) => {
       const weights = sumAgg<Publication>(publications, 'subdisciplines', 'subd_id', 'weight');
       return Object.entries(weights).map(([k, v]) => <SubdisciplineWeight>{subd_id: <number>(<any>k), weight: v});
@@ -144,6 +152,7 @@ export class DatabaseService {
   }
 
   getDistinct(fieldName: string, filter: Partial<Filter> = {}): Observable<string[]> {
+    filter = Object.assign({}, DEFAULT_FILTER, filter);
     return this.getPublications(filter).map((publications) => {
       const seen: any = {};
       const values: string[] = [];

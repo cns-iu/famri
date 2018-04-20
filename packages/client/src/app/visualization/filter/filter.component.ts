@@ -16,11 +16,11 @@ import { Filter } from 'famri-database';
   encapsulation: ViewEncapsulation.None
 })
 export class FilterComponent implements OnInit {
-  private filter: Partial<Filter> = {};
+  private filter: Partial<Filter> = {year: {start: 2002, end: 2017}};
   @Output() filterChange = new EventEmitter<Partial<Filter>>();
 
   yearSliderConfig = {
-    start: [2000, 2017],
+    start: [2002, 2017],
     margin: 0,
     padding: [0, 0],
     step: 1,
