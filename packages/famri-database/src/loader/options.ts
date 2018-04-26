@@ -1,4 +1,4 @@
-export const GRANTS = '../../raw-data/GIFTSOnlineData17042018020259.xlsx';
+export const GRANTS = '../../raw-data/GIFTSOnlineData26042018013122.xlsx';
 export const PUBS = '../../raw-data/FAMRI_Publications by grant_final .xlsx';
 export const CLEAN_PUBS = '../../raw-data/My EndNote Library_FAMRI_REFERENCE_GROUP_final.json';
 export const DB_JSON = '../../raw-data/database.json';

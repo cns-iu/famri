@@ -57,7 +57,7 @@ function pad(num, size) {
 }
 function cleanZip(zipcode: string): string {
   const zip = parseInt((zipcode || '').replace(/[^0-9]/g, '').trim());
-  return isNaN(zip) ? null : pad(zip, 5);
+  return isNaN(zip) ? null : pad((zip+'').slice(0,5), 5);
 }
 function zip2latlon(field): Operator<string, [number, number]> {
   return a(field).map<string>(cleanZip).map<[number, number]>((zip) => {
