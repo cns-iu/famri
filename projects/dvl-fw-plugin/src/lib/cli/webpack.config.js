@@ -10,7 +10,7 @@ module.exports = {
     fs: true
   },
   entry: {
-    'famri-export-project': path.resolve(__dirname, 'export-project.ts')
+    'famri': path.resolve(__dirname, 'index.ts')
   },
   // mode: 'production',
   mode: 'development',
@@ -49,7 +49,7 @@ module.exports = {
       }
       this.plugin('done', function() {
         var dist = path.resolve('dist', 'dvl-fw-plugin');
-        mkExecutable(dist, 'famri-export-project');
+        mkExecutable(dist, 'famri');
       });
     },
   ]
