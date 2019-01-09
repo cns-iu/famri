@@ -33,7 +33,7 @@ export class Publication {
   eissn: string;
   journalName: string;
   journalFullname: string;
-  category: string;
+  topicArea: string;
   authors: string[];
   authorsFullname: string[];
   authorsAddress: string[];

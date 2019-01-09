@@ -23,7 +23,7 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
         author = authors[name] = new Author({
           name,
           // fullname: pub.authorsFullname[index] || name,
-          category: pub.category,
+          topicArea: pub.topicArea,
           numPapers: 0,
           numCites: 0,
           firstYear: pub.publicationYear || 0,

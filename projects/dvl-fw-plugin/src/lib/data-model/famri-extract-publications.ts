@@ -14,7 +14,7 @@ export function extractPublications(publications: FamriRecord[]): Publication[] 
       title: pub.title,
       issn: pub.isbn ? pub.isbn.split('\r')[0] : undefined,
       eissn: pub.isbn ? pub.isbn.split('\r').slice(-1)[0] : undefined,
-      category: pub.custom4,
+      topicArea: pub.custom4,
       journalName: pub.journal,
       authors: uniq(pub.authors || []), // .map(s => startCase(toLower(s.trim())))),
       publicationYear: isNumber(Number(pub.year)) ? Number(pub.year) : 0,

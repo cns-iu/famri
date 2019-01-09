@@ -50,7 +50,7 @@ export class FamriProject extends DefaultProject {
         dataVariables: [
           {id: 'title', label: 'Title', dataType: 'text', scaleType: 'nominal'},
           {id: 'authors', label: 'Authors', dataType: 'text', scaleType: 'nominal'},
-          {id: 'category', label: 'Category', dataType: 'text', scaleType: 'nominal'},
+          {id: 'topicArea', label: 'Topic Area', dataType: 'text', scaleType: 'nominal'},
           {id: 'journalName', label: 'Journal', dataType: 'text', scaleType: 'nominal'},
           {id: 'publicationYear', label: 'Publication Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
@@ -70,7 +70,7 @@ export class FamriProject extends DefaultProject {
           {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
           {id: 'firstYear', label: 'First Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'lastYear', label: 'Last Year', dataType: 'integer', scaleType: 'interval'},
-          {id: 'category', label: 'Category', dataType: 'text', scaleType: 'nominal'},
+          {id: 'topicArea', label: 'Topic Area', dataType: 'text', scaleType: 'nominal'},
           {id: 'x', label: 'X', dataType: 'number', scaleType: 'interval'},
           {id: 'y', label: 'Y', dataType: 'number', scaleType: 'interval'}
         ]
@@ -145,12 +145,12 @@ export class FamriProject extends DefaultProject {
                 {selector: 'journalName'}
               ]
             },
-            category: {
+            topicArea: {
               axis: [
-                {selector: 'category'}
+                {selector: 'topicArea'}
               ],
               text: [
-                {selector: 'category'}
+                {selector: 'topicArea'}
               ]
             },
             numCites: {
@@ -385,12 +385,12 @@ export class FamriProject extends DefaultProject {
                 {selector: 'lastYearStrokeColor'}
               ]
             },
-            category: {
+            topicArea: {
               axis: [
-                {selector: 'category'}
+                {selector: 'topicArea'}
               ],
               text: [
-                {selector: 'category'}
+                {selector: 'topicArea'}
               ]
             },
           }
