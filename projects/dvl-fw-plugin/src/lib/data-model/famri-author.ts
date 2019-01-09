@@ -35,6 +35,7 @@ export class Author {
   address: string;
   location: Location;
 
+  category: string;
   numPapers: number;
   numCites: number;
   firstYear: number;

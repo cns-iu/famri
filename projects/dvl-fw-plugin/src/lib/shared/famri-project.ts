@@ -50,10 +50,11 @@ export class FamriProject extends DefaultProject {
         dataVariables: [
           {id: 'title', label: 'Title', dataType: 'text', scaleType: 'nominal'},
           {id: 'authors', label: 'Authors', dataType: 'text', scaleType: 'nominal'},
+          {id: 'category', label: 'Category', dataType: 'text', scaleType: 'nominal'},
           {id: 'journalName', label: 'Journal', dataType: 'text', scaleType: 'nominal'},
           {id: 'publicationYear', label: 'Publication Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
-          {id: 'id', label: 'WoS ID', dataType: 'text', scaleType: 'nominal'}
+          {id: 'id', label: 'Record ID', dataType: 'text', scaleType: 'nominal'}
         ]
       }, this),
       new DefaultRecordSet({
@@ -69,7 +70,7 @@ export class FamriProject extends DefaultProject {
           {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
           {id: 'firstYear', label: 'First Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'lastYear', label: 'Last Year', dataType: 'integer', scaleType: 'interval'},
-          {id: 'fullname', label: 'Full Name', dataType: 'text', scaleType: 'nominal'},
+          {id: 'category', label: 'Category', dataType: 'text', scaleType: 'nominal'},
           {id: 'x', label: 'X', dataType: 'number', scaleType: 'interval'},
           {id: 'y', label: 'Y', dataType: 'number', scaleType: 'interval'}
         ]
@@ -134,6 +135,22 @@ export class FamriProject extends DefaultProject {
             authors: {
               text: [
                 {selector: 'authorsLabel'}
+              ]
+            },
+            journalName: {
+              axis: [
+                {selector: 'journalName'}
+              ],
+              text: [
+                {selector: 'journalName'}
+              ]
+            },
+            category: {
+              axis: [
+                {selector: 'category'}
+              ],
+              text: [
+                {selector: 'category'}
               ]
             },
             numCites: {
@@ -244,17 +261,6 @@ export class FamriProject extends DefaultProject {
               ],
               axis: [
                 {selector: 'position[1]'}
-              ]
-            },
-            fullname: {
-              identifier: [
-                {selector: 'fullname'}
-              ],
-              axis: [
-                {selector: 'fullname'}
-              ],
-              text: [
-                {selector: 'fullname'}
               ]
             },
             numCites: {
@@ -378,7 +384,15 @@ export class FamriProject extends DefaultProject {
               strokeColor: [
                 {selector: 'lastYearStrokeColor'}
               ]
-            }
+            },
+            category: {
+              axis: [
+                {selector: 'category'}
+              ],
+              text: [
+                {selector: 'category'}
+              ]
+            },
           }
         }
       },
