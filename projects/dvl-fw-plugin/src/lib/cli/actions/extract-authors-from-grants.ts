@@ -9,15 +9,18 @@ export async function extractAuthorsFromGrants(grantsFile: string, authorsFile: 
 
   const authors = [];
   for (const grant of grants) {
-    const lastName = grant['PI_Last_Name'].trim();
-    const firstName = grant['PI_First_ Name'].trim();
-    const name = `${lastName}, ${firstName[0]}.`;
+    const names = [grant['EndNote author list_1'], grant['EndNote author list_2'], grant['EndNote author list_3']]
+      .map(s => (s || '').trim()).filter(s => !!s);
 
-    authors.push({
-      name, firstName, lastName
-    });
+    if (names.length > 0) {
+      for (const name of names) {
+        authors.push({
+          name, remapped: names[0]
+        });
+      }
+    }
   }
 
-  const csvString = csvStringify(authors, { header: true, columns: ['name', 'firstName', 'lastName']});
+  const csvString = csvStringify(authors, {header: true, columns: ['name', 'remapped']});
   fs.writeFileSync(authorsFile, csvString, 'utf8');
 }
