@@ -6,7 +6,7 @@ import { FamriDatabase } from '../data-model/famri-database';
 
 export class FamriProject extends DefaultProject {
 
-  constructor(database: FamriDatabase) {
+  constructor(private database: FamriDatabase) {
     super();
 
     this.rawData = this.getRawData(database);
@@ -45,7 +45,7 @@ export class FamriProject extends DefaultProject {
         id: 'publication',
         label: 'FAMRI Publication',
         labelPlural: 'FAMRI Publications',
-        description: '2002 - 2017',
+        description: `${this.database.publications[0].globalStats.yearMin} - ${this.database.publications[0].globalStats.yearMax}`,
         defaultRecordStream: 'publications',
         dataVariables: [
           {id: 'title', label: 'Title', dataType: 'text', scaleType: 'nominal'},
@@ -234,6 +234,9 @@ export class FamriProject extends DefaultProject {
               ],
               text: [
                 {selector: 'name'}
+              ],
+              label: [
+                {selector: 'label'}
               ],
               transparency: [
                 {id: 'fixed', selector: 'defaultStyles.transparency', label: 'Default'}
@@ -677,6 +680,12 @@ export class FamriProject extends DefaultProject {
             dataVariable: 'hIndex',
             graphicVariableType: 'color',
             graphicVariableId: 'color'
+          },
+          label: {
+            recordSet: 'author',
+            dataVariable: 'name',
+            graphicVariableType: 'label',
+            graphicVariableId: 'label'
           },
           tooltip: {
             recordSet: 'author',

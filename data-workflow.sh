@@ -22,3 +22,12 @@ cp $OUT/author_coauth.gexf $OUT/author_coauth_layout.gexf
 ./dist/dvl-fw-plugin/famri create-database $OUT/author_publications.json $OUT/author_coauth_layout.gexf $OUT/database.yml
 ./dist/dvl-fw-plugin/famri export-project $OUT/database.yml $OUT/project.yml
 ./dist/dvl-fw-plugin/famri export-db-as-csv $OUT/database.yml $OUT/database
+
+slice() {
+  ./dist/dvl-fw-plugin/famri limit-pubs-by-year $OUT/author_publications.json $1 $2 $OUT/author_publications_$1-$2.json
+  ./dist/dvl-fw-plugin/famri create-database $OUT/author_publications_$1-$2.json $OUT/author_coauth_layout.gexf $OUT/database_$1-$2.yml
+  ./dist/dvl-fw-plugin/famri export-project $OUT/database_$1-$2.yml $OUT/project_$1-$2.yml
+}
+
+slice 2002 2007
+slice 2002 2012

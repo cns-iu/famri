@@ -1,11 +1,11 @@
 import { access, chain, map, Operand } from '@ngx-dino/core';
+import { assignIn } from 'lodash';
+
 import {
   areaSizeScaleNormQuantitative, fontSizeScaleNormQuantitative, formatNumber, formatYear,
   colorScaleNormQuantitative, colorScaleNormQuantitativeStroke, norm0to100, quantitativeTransparency,
   defaultStyles, Transient
-} from '@dvl-fw/core';
-import { assignIn } from 'lodash';
-
+} from '../shared/encodings';
 import { Author } from './famri-author';
 
 

@@ -1,12 +1,12 @@
 // refer https://angular.io/guide/styleguide#style-03-06 for import line spacing
-import { access, chain, constant, Operand } from '@ngx-dino/core';
+import { assignIn } from 'lodash';
+import { access, chain, constant, map, Operand } from '@ngx-dino/core';
 
 import {
   areaSizeScaleNormQuantitative, fontSizeScaleNormQuantitative, formatNumber, formatYear,
   colorScaleNormQuantitative, colorScaleNormQuantitativeStroke, norm0to100, quantitativeTransparency,
   defaultStyles
-} from '@dvl-fw/core';
-import { assignIn } from 'lodash';
+} from '../shared/encodings';
 
 
 export class AuthorStats {
@@ -54,6 +54,9 @@ export class Author {
 
   @Operand<string>(constant('circle'))
   shape: string;
+
+  @Operand<string>(map(a => a.hIndexNorm > 50 ? a.name : undefined))
+  label: string;
 
   // #Papers Encodings
   @Operand<number>(norm0to100('numPapers', 'globalStats.numPapersMax'))

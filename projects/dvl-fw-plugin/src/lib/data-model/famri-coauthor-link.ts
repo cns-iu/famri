@@ -1,14 +1,14 @@
 // refer https://angular.io/guide/styleguide#style-03-06 for import line spacing
 import { access, chain, combine, map, Operand } from '@ngx-dino/core';
+import { assignIn } from 'lodash';
 
 import {
   areaSizeScaleNormQuantitative, fontSizeScaleNormQuantitative, strokeWidthScaleNormQuantitative,
   colorScaleNormQuantitative, colorScaleNormQuantitativeStroke,
   norm0to100, formatNumber, formatYear, quantitativeTransparency, defaultStyles, Transient
-} from '@dvl-fw/core';
-import { assignIn } from 'lodash';
-
+} from '../shared/encodings';
 import { Author } from './famri-author';
+
 
 export class CoAuthorLinkStats {
   numPapersMax = 0;

@@ -1,6 +1,6 @@
 import * as program from 'commander';
 
-import { exportProject, extractAuthorsFromGrants, limitPubs, extractCoAuthGexf, createDatabase, exportDbAsCSV } from './actions';
+import { exportProject, extractAuthorsFromGrants, limitPubs, limitPubsByYear, extractCoAuthGexf, createDatabase, exportDbAsCSV } from './actions';
 
 program
   .description('FAMRI Data Tools');
@@ -14,6 +14,11 @@ program
   .command('limit-pubs <inPubsJson> <authorsCsv> <outPubsJson>')
   .description('Limit publications to just authors provided.')
   .action(limitPubs);
+
+program
+  .command('limit-pubs-by-year <inPubsJson> <startYear> <endYear> <outPubsJson>')
+  .description('Limit publications to year range.')
+  .action(limitPubsByYear);
 
 program
   .command('extract-coauth-gexf <inPubsJson> <outCoAuthGexf>')

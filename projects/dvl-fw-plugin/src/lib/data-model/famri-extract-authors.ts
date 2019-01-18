@@ -1,4 +1,5 @@
 import { Graph } from 'graphology';
+import { orderBy } from 'lodash';
 
 import { Author, AuthorStats } from './famri-author';
 import { Publication } from './famri-publication';
@@ -61,6 +62,7 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
     a.hIndex = hIndex(a.sortedCites);
     globalStats.count(a);
   }
+  orderBy(authorList, 'hIndex', 'desc');
   authorList.forEach(a => globalStats.count(a));
   return authorList;
 }
