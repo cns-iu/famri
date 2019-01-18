@@ -1,5 +1,5 @@
 // refer https://angular.io/guide/styleguide#style-03-06 for import line spacing
-import { isNumber, startCase, toLower, uniq } from 'lodash';
+import { isFinite, startCase, toLower, uniq } from 'lodash';
 
 import { Publication, PublicationStats } from './famri-publication';
 import { FamriRecord } from './famri-record';
@@ -17,11 +17,12 @@ export function extractPublications(publications: FamriRecord[]): Publication[] 
       topicArea: pub.custom4,
       journalName: pub.journal,
       authors: uniq(pub.authors || []), // .map(s => startCase(toLower(s.trim())))),
-      publicationYear: isNumber(Number(pub.year)) ? Number(pub.year) : 0,
+      publicationYear: isFinite(Number(pub.year)) ? Number(pub.year) : 0,
       abstract: pub.abstract,
       publicationType: pub.type,
       issue: pub.volume,
-      numCites: pub.custom5 === '-' ? 0 : isNumber(Number(pub.custom5)) ? Number(pub.custom5) : 0,
+      numCites: pub.custom5 === '-' ? 0 : isFinite(Number(pub.custom5)) ? Number(pub.custom5) : 0,
+      hasCites: pub.custom5 !== '-',
       globalStats
     });
     publicationList.push(publication);

@@ -4,6 +4,10 @@ import { Author, AuthorStats } from './famri-author';
 import { Publication } from './famri-publication';
 
 
+function hIndex(cites: number[]): number {
+  return cites.sort((n1, n2) => n2 - n1).filter((n, i) => n > i).length;
+}
+
 export function extractAuthors(publications: Publication[], coauthorNetwork?: Graph): Author[] {
   const authors: any = {}, authorList: Author[] = [];
   const globalStats = new AuthorStats();
@@ -26,6 +30,8 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
           topicArea: pub.topicArea,
           numPapers: 0,
           numCites: 0,
+          sortedCites: [],
+          hIndex: 0,
           firstYear: pub.publicationYear || 0,
           lastYear: pub.publicationYear || 0,
           position: positions[name] || undefined,
@@ -36,6 +42,9 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
 
       author.numPapers++;
       author.numCites += pub.numCites || 0;
+      if (pub.hasCites) {
+        author.sortedCites.push(pub.numCites);
+      }
       if (pub.publicationYear) {
         if (pub.publicationYear < author.firstYear) {
           author.firstYear = pub.publicationYear;
@@ -46,6 +55,11 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
       }
     });
     pub.Authors = pub.authors.map(a => authors[a]);
+  }
+  for (const a of authorList) {
+    a.sortedCites = a.sortedCites.sort((n1, n2) => n2 - n1);
+    a.hIndex = hIndex(a.sortedCites);
+    globalStats.count(a);
   }
   authorList.forEach(a => globalStats.count(a));
   return authorList;

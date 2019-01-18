@@ -42,6 +42,7 @@ export class Publication {
   publicationType: string;
   issue: number;
   numCites: number;
+  hasCites: boolean;
   globalStats: PublicationStats;
   defaultStyles = defaultStyles;
 

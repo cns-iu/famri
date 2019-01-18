@@ -2,7 +2,7 @@
 import { access, chain, constant, Operand } from '@ngx-dino/core';
 
 import {
-  areaSizeScaleNormQuantitative, extractPoint, fontSizeScaleNormQuantitative, formatNumber, formatYear,
+  areaSizeScaleNormQuantitative, fontSizeScaleNormQuantitative, formatNumber, formatYear,
   colorScaleNormQuantitative, colorScaleNormQuantitativeStroke, norm0to100, quantitativeTransparency,
   defaultStyles
 } from '@dvl-fw/core';
@@ -12,12 +12,14 @@ import { assignIn } from 'lodash';
 export class AuthorStats {
   numPapersMax = 0;
   numCitesMax = 0;
+  hIndexMax = 0;
   yearMax = 0;
   yearMin = 9999;
 
   count(item: Author) {
     this.numPapersMax = Math.max(this.numPapersMax, item.numPapers);
     this.numCitesMax = Math.max(this.numCitesMax, item.numCites);
+    this.hIndexMax = Math.max(this.hIndexMax, item.hIndex);
     this.yearMax = Math.max(this.yearMax, item.firstYear, item.lastYear);
     if (item.firstYear > 0) {
       this.yearMin = Math.min(this.yearMin, item.firstYear);
@@ -38,6 +40,8 @@ export class Author {
   topicArea: string;
   numPapers: number;
   numCites: number;
+  sortedCites: number[];
+  hIndex: number;
   firstYear: number;
   lastYear: number;
   position: [number, number];
@@ -80,6 +84,20 @@ export class Author {
   numCitesColor: string;
   @Operand<string>(chain(access('numCitesNorm'), colorScaleNormQuantitativeStroke))
   numCitesStrokeColor: string;
+
+  // hIndex Encodings
+  @Operand<number>(norm0to100('hIndex', 'globalStats.hIndexMax'))
+  hIndexNorm: number;
+  @Operand<string>(chain(access('hIndex'), formatNumber))
+  hIndexLabel: string;
+  @Operand<number>(chain(access('hIndexNorm'), areaSizeScaleNormQuantitative))
+  hIndexAreaSize: number;
+  @Operand<number>(chain(access('hIndexNorm'), fontSizeScaleNormQuantitative))
+  hIndexFontSize: number;
+  @Operand<string>(chain(access('hIndexNorm'), colorScaleNormQuantitative))
+  hIndexColor: string;
+  @Operand<string>(chain(access('hIndexNorm'), colorScaleNormQuantitativeStroke))
+  hIndexStrokeColor: string;
 
   // First Year Encodings
   @Operand<number>(norm0to100('firstYear', 'globalStats.yearMax', 'globalStats.yearMin'))

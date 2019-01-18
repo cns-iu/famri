@@ -68,6 +68,7 @@ export class FamriProject extends DefaultProject {
           {id: 'name', label: 'Name', dataType: 'text', scaleType: 'nominal'},
           {id: 'numPapers', label: '# Publications', dataType: 'integer', scaleType: 'ratio'},
           {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
+          {id: 'hIndex', label: 'H-Index', dataType: 'integer', scaleType: 'ratio'},
           {id: 'firstYear', label: 'First Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'lastYear', label: 'Last Year', dataType: 'integer', scaleType: 'interval'},
           {id: 'topicArea', label: 'Topic Area', dataType: 'text', scaleType: 'nominal'},
@@ -290,6 +291,35 @@ export class FamriProject extends DefaultProject {
               ],
               strokeColor: [
                 {selector: 'numCitesStrokeColor'}
+              ]
+            },
+            hIndex: {
+              axis: [
+                {selector: 'hIndexLabel'}
+              ],
+              text: [
+                {selector: 'hIndexLabel'}
+              ],
+              input: [
+                {selector: 'hIndex'}
+              ],
+              label: [
+                {selector: 'hIndexLabel'}
+              ],
+              order: [
+                {selector: 'hIndex'},
+              ],
+              areaSize: [
+                {selector: 'hIndexAreaSize'}
+              ],
+              fontSize: [
+                {selector: 'hIndexFontSize'}
+              ],
+              color: [
+                {selector: 'hIndexColor'}
+              ],
+              strokeColor: [
+                {selector: 'hIndexStrokeColor'}
               ]
             },
             numPapers: {
@@ -644,7 +674,7 @@ export class FamriProject extends DefaultProject {
           },
           color: {
             recordSet: 'author',
-            dataVariable: 'numCites',
+            dataVariable: 'hIndex',
             graphicVariableType: 'color',
             graphicVariableId: 'color'
           },
