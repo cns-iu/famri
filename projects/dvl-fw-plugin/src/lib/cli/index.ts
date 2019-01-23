@@ -1,6 +1,6 @@
 import * as program from 'commander';
 
-import { exportProject, extractAuthorsFromGrants, limitPubs, limitPubsByYear, extractCoAuthGexf, createDatabase, exportDbAsCSV } from './actions';
+import { exportProject, extractAuthorsFromGrants, limitPubs, limitPubsByYear, extractCoAuthGexf, createDatabase, exportDbAsCSV, extractDbAsGexf } from './actions';
 
 program
   .description('FAMRI Data Tools');
@@ -34,6 +34,11 @@ program
   .command('export-db-as-csv <inDbYamlFile> <outCsvBase>')
   .description('Export the database yml as a set of flat csv files')
   .action(exportDbAsCSV);
+
+program
+  .command('export-db-as-gexf <inDbYamlFile> <outCoAuthGexf>')
+  .description('Export the database yml\'s coauthor network as a gexf file')
+  .action(extractDbAsGexf);
 
 program
   .command('export-project <inDbYaml> <outYAML>')

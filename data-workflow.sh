@@ -1,32 +1,41 @@
 #!/bin/bash
 set -ev
+shopt -s expand_aliases
 
 DATA=./raw-data/orig/2019-01-11
 OUT=./raw-data/data/2019-01-11
 mkdir -p $DATA $OUT
+
+alias famri="node --max_old_space_size=5000 ./dist/dvl-fw-plugin/famri"
+alias reflib="./node_modules/.bin/reflib"
 
 npm run build:cli
 
 EN_LIBRARY="$DATA/My EndNote Library_FAMRI_REFERENCE_GROUP_final.xml"
 AUTHOR_MAPPING="$DATA/FAMRI_grants_2002-2017_01-9-19.xlsx"
 
-./node_modules/.bin/reflib "$EN_LIBRARY" -o json -f $OUT/all_publications.json
-./dist/dvl-fw-plugin/famri extract-authors "$AUTHOR_MAPPING" $OUT/authors.csv
+reflib "$EN_LIBRARY" -o json -f $OUT/all_publications.json
+famri extract-authors "$AUTHOR_MAPPING" $OUT/authors.csv
 
-./dist/dvl-fw-plugin/famri limit-pubs $OUT/all_publications.json $OUT/authors.csv $OUT/author_publications.json
-./dist/dvl-fw-plugin/famri extract-coauth-gexf $OUT/author_publications.json $OUT/author_coauth.gexf
+famri limit-pubs $OUT/all_publications.json $OUT/authors.csv $OUT/author_publications.json
+famri extract-coauth-gexf $OUT/author_publications.json $OUT/author_coauth.gexf
 
 # Open in GEPHI and update the layout, save as $OUT/author_coauth_layout.gexf
 cp $OUT/author_coauth.gexf $OUT/author_coauth_layout.gexf
 
-./dist/dvl-fw-plugin/famri create-database $OUT/author_publications.json $OUT/author_coauth_layout.gexf $OUT/database.yml
-./dist/dvl-fw-plugin/famri export-project $OUT/database.yml $OUT/project.yml
-./dist/dvl-fw-plugin/famri export-db-as-csv $OUT/database.yml $OUT/database
+famri create-database $OUT/author_publications.json $OUT/author_coauth_layout.gexf $OUT/database.yml
+famri export-project $OUT/database.yml $OUT/project.yml
+famri export-db-as-csv $OUT/database.yml $OUT/database
+famri export-db-as-gexf $OUT/database.yml $OUT/coauthor_network.gexf
+
+famri create-database $OUT/all_publications.json $OUT/author_coauth_layout.gexf $OUT/all_database.yml
+famri export-project $OUT/all_database.yml $OUT/all_project.yml
+famri export-db-as-csv $OUT/all_database.yml $OUT/all_database
 
 slice() {
-  ./dist/dvl-fw-plugin/famri limit-pubs-by-year $OUT/author_publications.json $1 $2 $OUT/author_publications_$1-$2.json
-  ./dist/dvl-fw-plugin/famri create-database $OUT/author_publications_$1-$2.json $OUT/author_coauth_layout.gexf $OUT/database_$1-$2.yml
-  ./dist/dvl-fw-plugin/famri export-project $OUT/database_$1-$2.yml $OUT/project_$1-$2.yml
+  famri limit-pubs-by-year $OUT/author_publications.json $1 $2 $OUT/author_publications_$1-$2.json
+  famri create-database $OUT/author_publications_$1-$2.json $OUT/author_coauth_layout.gexf $OUT/database_$1-$2.yml
+  famri export-project $OUT/database_$1-$2.yml $OUT/project_$1-$2.yml
 }
 
 slice 2002 2007
