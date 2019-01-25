@@ -1,5 +1,5 @@
 import { Graph } from 'graphology';
-import { orderBy } from 'lodash';
+import { orderBy, uniq, reduce, maxBy } from 'lodash';
 
 import { Author, AuthorStats } from './famri-author';
 import { Publication } from './famri-publication';
@@ -28,7 +28,7 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
         author = authors[name] = new Author({
           name,
           // fullname: pub.authorsFullname[index] || name,
-          topicArea: pub.topicArea,
+          topicAreas: [],
           numPapers: 0,
           numCites: 0,
           sortedCites: [],
@@ -41,6 +41,7 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
         authorList.push(author);
       }
 
+      author.topicAreas = author.topicAreas.concat(pub.topicAreas);
       author.numPapers++;
       author.numCites += pub.numCites || 0;
       if (pub.hasCites) {
@@ -58,6 +59,9 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
     pub.Authors = pub.authors.map(a => authors[a]);
   }
   for (const a of authorList) {
+    const hist = reduce(a.topicAreas, (acc, val) => (acc[val] = (acc[val] || 0) + 1, acc), {});
+    a.topTopicArea = maxBy(Object.entries(hist), i => i[1])[0];
+    a.topicAreas = uniq(a.topicAreas.sort());
     a.sortedCites = a.sortedCites.sort((n1, n2) => n2 - n1);
     a.hIndex = hIndex(a.sortedCites);
     globalStats.count(a);

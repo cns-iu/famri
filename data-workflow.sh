@@ -2,17 +2,15 @@
 set -ev
 shopt -s expand_aliases
 
-DATA=./raw-data/orig/2019-01-11
-OUT=./raw-data/data/2019-01-11
+EN_LIBRARY="./raw-data/orig/2019-01-25/My EndNote Library_FAMRI_REFERENCE_GROUP_1-23-19.xml"
+AUTHOR_MAPPING="./raw-data/orig/2019-01-09/FAMRI_grants_2002-2017_01-9-19.xlsx"
+OUT=./raw-data/data/2019-01-25
 mkdir -p $DATA $OUT
 
 alias famri="node --max_old_space_size=5000 ./dist/dvl-fw-plugin/famri"
 alias reflib="./node_modules/.bin/reflib"
 
 npm run build:cli
-
-EN_LIBRARY="$DATA/My EndNote Library_FAMRI_REFERENCE_GROUP_final.xml"
-AUTHOR_MAPPING="$DATA/FAMRI_grants_2002-2017_01-9-19.xlsx"
 
 reflib "$EN_LIBRARY" -o json -f $OUT/all_publications.json
 famri extract-authors "$AUTHOR_MAPPING" $OUT/authors.csv

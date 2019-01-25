@@ -9,10 +9,10 @@ import { FamriDatabase } from './../../data-model/famri-database';
 function flattenObject(item: any, arrayItemSep: string = '|'): any {
   const flatItem = {};
   forOwn(item, (value: any, key: string) => {
-    if (isArray(value)) {
-      value = value.join(arrayItemSep);
-    } else if (isObject(value)) {
+    if (key === 'Authors' || (!isArray(value) && isObject(value))) {
       return;
+    } else if (isArray(value) && value.length > 0 && !isObject(value.length[1])) {
+      value = value.join(arrayItemSep);
     }
     flatItem[key] = String(value).replace(new RegExp('[\r\n]+', 'g'), ' ').trim();
   });

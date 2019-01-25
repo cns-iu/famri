@@ -37,7 +37,8 @@ export class Author {
   address: string;
   location: Location;
 
-  topicArea: string;
+  topTopicArea: string;
+  topicAreas: string[];
   numPapers: number;
   numCites: number;
   sortedCites: number[];

@@ -9,15 +9,11 @@ export async function extractAuthorsFromGrants(grantsFile: string, authorsFile: 
 
   const authors = [];
   for (const grant of grants) {
-    const names = [grant['EndNote author list_1'], grant['EndNote author list_2'], grant['EndNote author list_3']]
-      .map(s => (s || '').trim()).filter(s => !!s);
+    const names = ['EndNote author list_1', 'EndNote author list_2', 'EndNote author list_3']
+      .map(field => (grant[field] || '').trim()).filter(s => !!s);
 
-    if (names.length > 0) {
-      for (const name of names) {
-        authors.push({
-          name, remapped: names[0]
-        });
-      }
+    for (const name of names) {
+      authors.push({name, remapped: names[0]});
     }
   }
 

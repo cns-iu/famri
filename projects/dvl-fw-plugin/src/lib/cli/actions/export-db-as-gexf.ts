@@ -11,16 +11,27 @@ export function extractDbAsGexf(inData: string, outputGexf: string) {
   const graph = new UndirectedGraph();
 
   for (const author of database.authors) {
-    graph.addNode(author.name, Object.assign(author, 
-      {defaultStyles: undefined, position: undefined, globalStats: undefined,
-       x: Math.random() * 1000,y: Math.random() * 1000, size: 10}
+    graph.addNode(author.name, Object.assign(author,
+      {
+        // Remove boring fields
+        defaultStyles: undefined, position: undefined, globalStats: undefined,
+        // Give all nodes a label from author.name
+        label: author.name,
+        // Pipe delimit topic areas
+        topicAreas: author.topicAreas.join('|'),
+        // Setup vars for a default layout
+        x: Math.random() * 1000, y: Math.random() * 1000, size: 10
+      }
     ));
   }
   for (const edge of database.coAuthorLinks) {
     graph.addEdgeWithKey(edge.identifier, edge.author1, edge.author2, Object.assign(edge,
-      {defaultStyles: undefined, position: undefined, globalStats: undefined, 
+      {
+        // Remove boring fields
+        defaultStyles: undefined, position: undefined, globalStats: undefined,
         author1: undefined, author2: undefined, Author1: undefined, Author2: undefined,
-        source: undefined, target: undefined}
+        source: undefined, target: undefined
+      }
     ));
   }
 
