@@ -1,3 +1,4 @@
+import { Topic } from './famri-topic';
 import { access, chain, map, Operand } from '@ngx-dino/core';
 import { assignIn } from 'lodash';
 
@@ -52,6 +53,8 @@ export class Publication {
 
   // @Transient
   Authors: Author[];
+  // @Transient
+  Topics: Topic[];
 
   @Operand<string>(chain(access<string[]>('authors'), map(s => s.join(', '))))
   authorsLabel: string;

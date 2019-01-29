@@ -33,6 +33,7 @@ export class FamriProject extends DefaultProject {
         recordStreams: [
           {id: 'publications', label: 'Publications'},
           {id: 'authors', label: 'Authors'},
+          {id: 'topics', label: 'Topic Areas'},
           {id: 'coAuthorLinks', label: 'Co-Author Links'}
         ]
       }, this)
@@ -74,6 +75,21 @@ export class FamriProject extends DefaultProject {
           {id: 'topicArea', label: 'Topic Area', dataType: 'text', scaleType: 'nominal'},
           {id: 'x', label: 'X', dataType: 'number', scaleType: 'interval'},
           {id: 'y', label: 'Y', dataType: 'number', scaleType: 'interval'}
+        ]
+      }, this),
+      new DefaultRecordSet({
+        id: 'topic',
+        label: 'Topic Area',
+        labelPlural: 'Topic Areas',
+        parent: 'publication',
+        description: 'from FAMRI Publications',
+        defaultRecordStream: 'topics',
+        dataVariables: [
+          {id: 'name', label: 'Name', dataType: 'text', scaleType: 'nominal'},
+          {id: 'numPapers', label: '# Publications', dataType: 'integer', scaleType: 'ratio'},
+          {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
+          {id: 'firstYear', label: 'First Year', dataType: 'integer', scaleType: 'interval'},
+          {id: 'lastYear', label: 'Last Year', dataType: 'integer', scaleType: 'interval'}
         ]
       }, this),
       new DefaultRecordSet({
@@ -426,6 +442,161 @@ export class FamriProject extends DefaultProject {
                 {selector: 'topicArea'}
               ]
             },
+          }
+        }
+      },
+      {
+        recordStream: 'topics',
+        mappings: {
+          topic: {
+            name: {
+              identifier: [
+                {selector: 'name'}
+              ],
+              axis: [
+                {selector: 'name'}
+              ],
+              text: [
+                {selector: 'name'}
+              ],
+              label: [
+                {selector: 'name'}
+              ],
+              transparency: [
+                {id: 'fixed', selector: 'defaultStyles.transparency', label: 'Default'}
+              ],
+              strokeColor: [
+                {id: 'fixed', selector: 'defaultStyles.strokeColor', label: 'Default'}
+              ],
+              strokeWidth: [
+                {id: 'fixed', selector: 'defaultStyles.strokeWidth', label: 'Default'}
+              ],
+              strokeTransparency: [
+                {id: 'fixed', selector: 'defaultStyles.strokeTransparency', label: 'Default'}
+              ]
+            },
+            numCites: {
+              axis: [
+                {selector: 'numCitesLabel'}
+              ],
+              text: [
+                {selector: 'numCitesLabel'}
+              ],
+              input: [
+                {selector: 'numCites'}
+              ],
+              label: [
+                {selector: 'numCitesLabel'}
+              ],
+              order: [
+                {selector: 'numCites'},
+              ],
+              areaSize: [
+                {selector: 'numCitesAreaSize'}
+              ],
+              fontSize: [
+                {selector: 'numCitesFontSize'}
+              ],
+              color: [
+                {selector: 'numCitesColor'}
+              ],
+              strokeColor: [
+                {selector: 'numCitesStrokeColor'}
+              ]
+            },
+            numPapers: {
+              axis: [
+                {selector: 'numPapersLabel'}
+              ],
+              text: [
+                {selector: 'numPapersLabel'}
+              ],
+              input: [
+                {selector: 'numPapers'}
+              ],
+              label: [
+                {selector: 'numPapersLabel'}
+              ],
+              order: [
+                {selector: 'numPapers'},
+              ],
+              areaSize: [
+                {selector: 'numPapersAreaSize'}
+              ],
+              fontSize: [
+                {selector: 'numPapersFontSize'}
+              ],
+              color: [
+                {selector: 'numPapersColor'}
+              ],
+              strokeColor: [
+                {selector: 'numPapersStrokeColor'}
+              ],
+              transparency: [
+                {selector: 'numPapersTransparency'}
+              ],
+              strokeTransparency: [
+                {selector: 'numPapersTransparency'}
+              ]
+            },
+            firstYear: {
+              axis: [
+                {selector: 'firstYearLabel'}
+              ],
+              text: [
+                {selector: 'firstYearLabel'}
+              ],
+              input: [
+                {selector: 'firstYear'}
+              ],
+              label: [
+                {selector: 'firstYearLabel'}
+              ],
+              order: [
+                {selector: 'firstYear'},
+              ],
+              areaSize: [
+                {selector: 'firstYearAreaSize'}
+              ],
+              fontSize: [
+                {selector: 'firstYearFontSize'}
+              ],
+              color: [
+                {selector: 'firstYearColor'}
+              ],
+              strokeColor: [
+                {selector: 'firstYearStrokeColor'}
+              ]
+            },
+            lastYear: {
+              axis: [
+                {selector: 'lastYearLabel'}
+              ],
+              text: [
+                {selector: 'lastYearLabel'}
+              ],
+              input: [
+                {selector: 'lastYear'}
+              ],
+              label: [
+                {selector: 'lastYearLabel'}
+              ],
+              order: [
+                {selector: 'lastYear'},
+              ],
+              areaSize: [
+                {selector: 'lastYearAreaSize'}
+              ],
+              fontSize: [
+                {selector: 'lastYearFontSize'}
+              ],
+              color: [
+                {selector: 'lastYearColor'}
+              ],
+              strokeColor: [
+                {selector: 'lastYearStrokeColor'}
+              ]
+            }
           }
         }
       },

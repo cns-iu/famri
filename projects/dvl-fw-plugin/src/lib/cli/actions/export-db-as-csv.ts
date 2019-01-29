@@ -28,4 +28,5 @@ export async function exportDbAsCSV(inData: string, outBase: string) {
   fs.writeFileSync(`${outBase}.publications.csv`, arrayToCsv(database.publications), 'utf8');
   fs.writeFileSync(`${outBase}.authors.csv`, arrayToCsv(database.authors), 'utf8');
   fs.writeFileSync(`${outBase}.coAuthorLinks.csv`, arrayToCsv(database.coAuthorLinks), 'utf8');
+  fs.writeFileSync(`${outBase}.topics.csv`, arrayToCsv(database.topics), 'utf8');
 }
