@@ -59,28 +59,25 @@ function getTopicAuthorGexf(database: FamriDatabase): UndirectedGraph {
   const graph = new UndirectedGraph();
 
   for (const topic of database.topics) {
-    graph.addNode(topic.name, Object.assign(topic,
+    graph.addNode(topic.name, Object.assign({nodeType: 'topic'}, topic,
       {
         // Remove boring fields
         defaultStyles: undefined, position: undefined, globalStats: undefined,
         // Give all nodes a label from author.name
         label: topic.name,
-        // Add type info for bi-modal network
-        type: 'topic',
+        
         // Setup vars for a default layout
         x: Math.random() * 1000, y: Math.random() * 1000, size: 10
       }
     ));
   }
   for (const author of database.authors) {
-    graph.addNode(author.name, Object.assign(author,
+    graph.addNode(author.name, Object.assign({nodeType: 'author'}, author,
       {
         // Remove boring fields
         defaultStyles: undefined, position: undefined, globalStats: undefined, topicAreas: undefined,
         // Give all nodes a label from author.name
         label: author.name,
-        // Add type info for bi-modal network
-        type: 'author',
         // Setup vars for a default layout
         x: Math.random() * 1000, y: Math.random() * 1000, size: 10
       }

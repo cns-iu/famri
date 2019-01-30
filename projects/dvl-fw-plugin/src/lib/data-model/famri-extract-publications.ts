@@ -7,11 +7,18 @@ import { FamriRecord } from './famri-record';
 
 function normalizeTopic(name: string): string {
   const remap = {
-    'inflammation': 'Inflammation'
+    'inflammation': 'Inflammation',
+    'Cancer: treatment': 'Cancer: Treatment'
   };
   let topic = name.replace(new RegExp('(\/$|\\\\|\_042337\_CoE)', 'g'), '');
   topic = remap[topic] || topic;
   return topic;
+}
+function splitTopicAreas(topicAreas: string) {
+  return topicAreas
+    .replace('/\r','/')
+    .replace('Cancer: Lung/Center', 'Cancer: Lung\rCenter')
+    .split('\r').map(normalizeTopic)
 }
 
 export function extractPublications(publications: FamriRecord[]): Publication[] {
@@ -23,7 +30,7 @@ export function extractPublications(publications: FamriRecord[]): Publication[] 
       title: pub.title,
       issn: pub.isbn ? pub.isbn.split('\r')[0] : undefined,
       eissn: pub.isbn ? pub.isbn.split('\r').slice(-1)[0] : undefined,
-      topicAreas: pub.custom4.split('\r').map(normalizeTopic),
+      topicAreas: splitTopicAreas(pub.custom4),
       journalName: pub.journal,
       authors: uniq(pub.authors || []), // .map(s => startCase(toLower(s.trim())))),
       publicationYear: isFinite(Number(pub.year)) ? Number(pub.year) : 0,
