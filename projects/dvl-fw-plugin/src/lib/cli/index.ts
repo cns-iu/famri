@@ -36,7 +36,7 @@ program
   .action(exportDbAsCSV);
 
 program
-  .command('export-db-as-gexf <inDbYamlFile> <outCoAuthGexf>')
+  .command('export-db-as-gexf <inDbYamlFile> <outCoAuthGexf> <outTopicAuthGexf>')
   .description('Export the database yml\'s coauthor network as a gexf file')
   .action(extractDbAsGexf);
 

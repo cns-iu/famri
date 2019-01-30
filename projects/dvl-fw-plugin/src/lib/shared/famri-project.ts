@@ -34,7 +34,8 @@ export class FamriProject extends DefaultProject {
           {id: 'publications', label: 'Publications'},
           {id: 'authors', label: 'Authors'},
           {id: 'topics', label: 'Topic Areas'},
-          {id: 'coAuthorLinks', label: 'Co-Author Links'}
+          {id: 'coAuthorLinks', label: 'Co-Author Links'},
+          {id: 'topicAuthorLinks', label: 'Topic-Author Links'}
         ]
       }, this)
     ];
@@ -111,6 +112,27 @@ export class FamriProject extends DefaultProject {
           {id: 'sourceY', label: 'Author 1 Y', dataType: 'number', scaleType: 'interval'},
           {id: 'targetX', label: 'Author 2 X', dataType: 'number', scaleType: 'interval'},
           {id: 'targetY', label: 'Author 2 Y', dataType: 'number', scaleType: 'interval'}
+        ]
+      }, this),
+      new DefaultRecordSet({
+        id: 'topicAuthorLink',
+        label: 'Topic-Author Link',
+        labelPlural: 'Topic-Author Links',
+        parent: 'publication',
+        description: 'from FAMRI Publications',
+        defaultRecordStream: 'topicAuthorLinks',
+        dataVariables: [
+          {id: 'topic', label: 'Topic', dataType: 'text', scaleType: 'nominal'},
+          {id: 'author', label: 'Author', dataType: 'text', scaleType: 'nominal'},
+          {id: 'numPapers', label: '# Publications', dataType: 'integer', scaleType: 'ratio'},
+          {id: 'numCites', label: '# Citations', dataType: 'integer', scaleType: 'ratio'},
+          {id: 'firstYear', label: 'First Year', dataType: 'integer', scaleType: 'interval'},
+          {id: 'lastYear', label: 'Last Year', dataType: 'integer', scaleType: 'interval'},
+          {id: 'identifier', label: 'Identifier', dataType: 'text', scaleType: 'nominal'},
+          {id: 'sourceX', label: 'Topic X', dataType: 'number', scaleType: 'interval'},
+          {id: 'sourceY', label: 'Topic Y', dataType: 'number', scaleType: 'interval'},
+          {id: 'targetX', label: 'Author X', dataType: 'number', scaleType: 'interval'},
+          {id: 'targetY', label: 'Author Y', dataType: 'number', scaleType: 'interval'}
         ]
       }, this)
     ];
@@ -673,6 +695,218 @@ export class FamriProject extends DefaultProject {
               ],
               axis: [
                 {selector: 'target[1]'}
+              ]
+            },
+            numCites: {
+              axis: [
+                {selector: 'numCitesLabel'}
+              ],
+              text: [
+                {selector: 'numCitesLabel'}
+              ],
+              input: [
+                {selector: 'numCites'}
+              ],
+              label: [
+                {selector: 'numCitesLabel'}
+              ],
+              order: [
+                {selector: 'numCites'},
+              ],
+              areaSize: [
+                {selector: 'numCitesAreaSize'}
+              ],
+              strokeWidth: [
+                {selector: 'numCitesStrokeWidth'}
+              ],
+              fontSize: [
+                {selector: 'numCitesFontSize'}
+              ],
+              color: [
+                {selector: 'numCitesColor'}
+              ],
+              strokeColor: [
+                {selector: 'numCitesStrokeColor'}
+              ]
+            },
+            numPapers: {
+              axis: [
+                {selector: 'numPapersLabel'}
+              ],
+              text: [
+                {selector: 'numPapersLabel'}
+              ],
+              input: [
+                {selector: 'numPapers'}
+              ],
+              label: [
+                {selector: 'numPapersLabel'}
+              ],
+              order: [
+                {selector: 'numPapers'},
+              ],
+              areaSize: [
+                {selector: 'numPapersAreaSize'}
+              ],
+              strokeWidth: [
+                {selector: 'numPapersStrokeWidth'}
+              ],
+              fontSize: [
+                {selector: 'numPapersFontSize'}
+              ],
+              color: [
+                {selector: 'numPapersColor'}
+              ],
+              transparency: [
+                {selector: 'numPapersTransparency'}
+              ],
+              strokeTransparency: [
+                {selector: 'numPapersTransparency'}
+              ],
+              strokeColor: [
+                {selector: 'numPapersStrokeColor'}
+              ]
+            },
+            firstYear: {
+              axis: [
+                {selector: 'firstYearLabel'}
+              ],
+              text: [
+                {selector: 'firstYearLabel'}
+              ],
+              input: [
+                {selector: 'firstYear'}
+              ],
+              label: [
+                {selector: 'firstYearLabel'}
+              ],
+              order: [
+                {selector: 'firstYear'},
+              ],
+              areaSize: [
+                {selector: 'firstYearAreaSize'}
+              ],
+              strokeWidth: [
+                {selector: 'firstYearStrokeWidth'}
+              ],
+              fontSize: [
+                {selector: 'firstYearFontSize'}
+              ],
+              color: [
+                {selector: 'firstYearColor'}
+              ],
+              strokeColor: [
+                {selector: 'firstYearStrokeColor'}
+              ]
+            },
+            lastYear: {
+              axis: [
+                {selector: 'lastYearLabel'}
+              ],
+              text: [
+                {selector: 'lastYearLabel'}
+              ],
+              input: [
+                {selector: 'lastYear'}
+              ],
+              label: [
+                {selector: 'lastYearLabel'}
+              ],
+              order: [
+                {selector: 'lastYear'},
+              ],
+              areaSize: [
+                {selector: 'lastYearAreaSize'}
+              ],
+              strokeWidth: [
+                {selector: 'lastYearStrokeWidth'}
+              ],
+              fontSize: [
+                {selector: 'lastYearFontSize'}
+              ],
+              color: [
+                {selector: 'lastYearColor'}
+              ],
+              strokeColor: [
+                {selector: 'lastYearStrokeColor'}
+              ]
+            }
+          }
+        }
+      },
+      {
+        recordStream: 'topicAuthorLinks',
+        mappings: {
+          topicAuthorLink: {
+            topic: {
+              identifier: [
+                {selector: 'topic'}
+              ],
+              axis: [
+                {selector: 'topic'}
+              ],
+              text: [
+                {selector: 'topic'}
+              ]
+            },
+            author: {
+              identifier: [
+                {selector: 'author'}
+              ],
+              axis: [
+                {selector: 'author'}
+              ],
+              text: [
+                {selector: 'author'}
+              ]
+            },
+            identifier: {
+              identifier: [
+                {selector: 'identifier'}
+              ],
+              transparency: [
+                {id: 'fixed', selector: 'defaultStyles.transparency', label: 'Default'}
+              ],
+              strokeColor: [
+                {id: 'fixed', selector: 'defaultStyles.strokeColor', label: 'Default'}
+              ],
+              strokeWidth: [
+                {id: 'fixed', selector: 'defaultStyles.strokeWidth', label: 'Default'}
+              ],
+              strokeTransparency: [
+                {id: 'fixed', selector: 'defaultStyles.strokeTransparency', label: 'Default'}
+              ]
+            },
+            sourceX: {
+              text: [
+                {selector: 'Topic.position[0]'}
+              ],
+              axis: [
+                {selector: 'Topic.position[0]'}
+              ]
+            },
+            sourceY: {
+              text: [
+                {selector: 'Topic.position[1]'}
+              ],
+              axis: [
+                {selector: 'Topic.position[1]'}
+              ]
+            },
+            targetX: {
+              text: [
+                {selector: 'Author.position[0]'}
+              ],
+              axis: [
+                {selector: 'Author.position[0]'}
+              ]
+            },
+            targetY: {
+              text: [
+                {selector: 'Author.position[1]'}
+              ],
+              axis: [
+                {selector: 'Author.position[1]'}
               ]
             },
             numCites: {

@@ -1,10 +1,10 @@
 import { orderBy } from 'lodash';
 import { Publication } from './famri-publication';
-import { Topic, TopicStats } from './famri-topic';
+import { Topic } from './famri-topic';
 
 export function extractTopics(publications: Publication[]): Topic[] {
   const topics: any = {}, topicList: Topic[] = [];
-  const globalStats = new TopicStats();
+  const globalStats = {};
 
   for (const pub of publications) {
     pub.topicAreas.forEach((name, index) => {
@@ -35,10 +35,7 @@ export function extractTopics(publications: Publication[]): Topic[] {
     });
     pub.Topics = pub.topicAreas.map(a => topics[a]);
   }
-  for (const a of topicList) {
-    globalStats.count(a);
-  }
-  topicList.forEach(a => globalStats.count(a));
+  topicList.forEach(a => a.updateGlobalStats(globalStats));
 
   return orderBy(topicList, 'name', 'asc');
 }

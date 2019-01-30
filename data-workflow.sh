@@ -24,7 +24,7 @@ cp $OUT/author_coauth.gexf $OUT/author_coauth_layout.gexf
 famri create-database $OUT/author_publications.json $OUT/author_coauth_layout.gexf $OUT/database.yml
 famri export-project $OUT/database.yml $OUT/project.yml
 famri export-db-as-csv $OUT/database.yml $OUT/database
-famri export-db-as-gexf $OUT/database.yml $OUT/coauthor_network.gexf
+famri export-db-as-gexf $OUT/database.yml $OUT/coauthor_network.gexf $OUT/topicauthor_network.gexf
 
 famri create-database $OUT/all_publications.json $OUT/author_coauth_layout.gexf $OUT/all_database.yml
 famri export-project $OUT/all_database.yml $OUT/all_project.yml
