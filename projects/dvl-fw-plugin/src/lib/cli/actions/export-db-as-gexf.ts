@@ -13,7 +13,7 @@ function writeGraph(graph, outputGexf: string) {
 
 export function extractDbAsGexf(inData: string, coAuthorGexf: string, topicAuthorGexf: string) {
   const database = new FamriDatabase(readYAML(inData));
-  
+
   writeGraph(getCoAuthorGexf(database), coAuthorGexf);
   writeGraph(getTopicAuthorGexf(database), topicAuthorGexf);
 }
@@ -65,7 +65,7 @@ function getTopicAuthorGexf(database: FamriDatabase): UndirectedGraph {
         defaultStyles: undefined, position: undefined, globalStats: undefined,
         // Give all nodes a label from author.name
         label: topic.name,
-        
+
         // Setup vars for a default layout
         x: Math.random() * 1000, y: Math.random() * 1000, size: 10
       }

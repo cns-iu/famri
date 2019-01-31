@@ -14,11 +14,12 @@ function normalizeTopic(name: string): string {
   topic = remap[topic] || topic;
   return topic;
 }
+
 function splitTopicAreas(topicAreas: string) {
   return topicAreas
-    .replace('/\r','/')
+    .replace('/\r', '/')
     .replace('Cancer: Lung/Center', 'Cancer: Lung\rCenter')
-    .split('\r').map(normalizeTopic)
+    .split('\r').map(normalizeTopic);
 }
 
 export function extractPublications(publications: FamriRecord[]): Publication[] {

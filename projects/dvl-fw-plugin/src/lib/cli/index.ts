@@ -1,6 +1,9 @@
 import * as program from 'commander';
 
-import { exportProject, extractAuthorsFromGrants, limitPubs, limitPubsByYear, extractCoAuthGexf, createDatabase, exportDbAsCSV, extractDbAsGexf } from './actions';
+import {
+  exportProject, extractAuthorsFromGrants, limitPubs, limitPubsByYear,
+  extractCoAuthGexf, createDatabase, exportDbAsCSV, extractDbAsGexf
+} from './actions';
 
 program
   .description('FAMRI Data Tools');
