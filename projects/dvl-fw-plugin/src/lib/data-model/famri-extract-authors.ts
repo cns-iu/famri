@@ -1,7 +1,7 @@
 import { Graph } from 'graphology';
 import { orderBy, uniq, reduce, maxBy } from 'lodash';
 
-import { Author, AuthorStats } from './famri-author';
+import { Author } from './famri-author';
 import { Publication } from './famri-publication';
 
 
@@ -11,7 +11,7 @@ function hIndex(cites: number[]): number {
 
 export function extractAuthors(publications: Publication[], coauthorNetwork?: Graph): Author[] {
   const authors: any = {}, authorList: Author[] = [];
-  const globalStats = new AuthorStats();
+  const globalStats: any = {};
 
   const positions = {};
   if (coauthorNetwork) {
@@ -30,6 +30,8 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
           // fullname: pub.authorsFullname[index] || name,
           topicAreas: [],
           numPapers: 0,
+          numPapers1: 0,
+          numPapers2: 0,
           numCites: 0,
           sortedCites: [],
           hIndex: 0,
@@ -48,6 +50,11 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
         author.sortedCites.push(pub.numCites);
       }
       if (pub.publicationYear) {
+        if (pub.publicationYear < 2010) {
+          author.numPapers1++;
+        } else {
+          author.numPapers2++;
+        }
         if (pub.publicationYear < author.firstYear) {
           author.firstYear = pub.publicationYear;
         }
@@ -62,11 +69,7 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
     const hist = reduce(a.topicAreas, (acc, val) => (acc[val] = (acc[val] || 0) + 1, acc), {});
     a.topTopicArea = maxBy(Object.entries(hist), i => i[1])[0];
     a.topicAreas = uniq(a.topicAreas.sort());
-    a.sortedCites = a.sortedCites.sort((n1, n2) => n2 - n1);
-    a.hIndex = hIndex(a.sortedCites);
-    globalStats.count(a);
+    a.updateGlobalStats(globalStats);
   }
-  orderBy(authorList, 'hIndex', 'desc');
-  authorList.forEach(a => globalStats.count(a));
-  return authorList;
+  return orderBy(authorList, 'name', 'asc');
 }

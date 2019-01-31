@@ -140,3 +140,92 @@ export function WithNumCites<T extends Constructor<Mappable>>(Base: T) {
   }
   return NumCites;
 }
+
+export function WithNumPapers1<T extends Constructor<Mappable>>(Base: T) {
+  class NumPapers1 extends Base {
+    numPapers1: number;
+
+    // #Papers Encodings
+    @Operand<number>(norm0to100('numPapers1', 'globalStats.numPapersMax'))
+    numPapers1Norm: number;
+    @Operand<string>(chain(access('numPapers1'), formatNumber))
+    numPapers1Label: string;
+    @Operand<number>(chain(access('numPapers1Norm'), areaSizeScaleNormQuantitative))
+    numPapers1AreaSize: number;
+    @Operand<number>(chain(access('numPapers1Norm'), fontSizeScaleNormQuantitative))
+    numPapers1FontSize: number;
+    @Operand<string>(chain(access('numPapers1Norm'), colorScaleNormQuantitative))
+    numPapers1Color: string;
+    @Operand<string>(chain(access('numPapers1Norm'), colorScaleNormQuantitativeStroke))
+    numPapers1StrokeColor: string;
+    @Operand<number>(chain(access<number>('numPapers1Norm'), quantitativeTransparency))
+    numPapers1Transparency: number;
+
+    updateGlobalStats(globalStats: any) {
+      super.updateGlobalStats(globalStats);
+      globalStats.numPapersMax = Math.max(globalStats.numPapersMax || 0, this.numPapers1);
+    }
+  }
+  return NumPapers1;
+}
+
+export function WithNumPapers2<T extends Constructor<Mappable>>(Base: T) {
+  class NumPapers2 extends Base {
+    numPapers2: number;
+
+    // #Papers Encodings
+    @Operand<number>(norm0to100('numPapers2', 'globalStats.numPapersMax'))
+    numPapers2Norm: number;
+    @Operand<string>(chain(access('numPapers2'), formatNumber))
+    numPapers2Label: string;
+    @Operand<number>(chain(access('numPapers2Norm'), areaSizeScaleNormQuantitative))
+    numPapers2AreaSize: number;
+    @Operand<number>(chain(access('numPapers2Norm'), fontSizeScaleNormQuantitative))
+    numPapers2FontSize: number;
+    @Operand<string>(chain(access('numPapers2Norm'), colorScaleNormQuantitative))
+    numPapers2Color: string;
+    @Operand<string>(chain(access('numPapers2Norm'), colorScaleNormQuantitativeStroke))
+    numPapers2StrokeColor: string;
+    @Operand<number>(chain(access<number>('numPapers2Norm'), quantitativeTransparency))
+    numPapers2Transparency: number;
+
+    updateGlobalStats(globalStats: any) {
+      super.updateGlobalStats(globalStats);
+      globalStats.numPapersMax = Math.max(globalStats.numPapersMax || 0, this.numPapers2);
+    }
+  }
+  return NumPapers2;
+}
+
+function hIndex(cites: number[]): number {
+  return cites.sort((n1, n2) => n2 - n1).filter((n, i) => n > i).length;
+}
+
+export function WithHIndex<T extends Constructor<Mappable>>(Base: T) {
+  class HIndex extends Base {
+    hIndex: number;
+    sortedCites: number[];
+
+    // hIndex Encodings
+    @Operand<number>(norm0to100('hIndex', 'globalStats.hIndexMax'))
+    hIndexNorm: number;
+    @Operand<string>(chain(access('hIndex'), formatNumber))
+    hIndexLabel: string;
+    @Operand<number>(chain(access('hIndexNorm'), areaSizeScaleNormQuantitative))
+    hIndexAreaSize: number;
+    @Operand<number>(chain(access('hIndexNorm'), fontSizeScaleNormQuantitative))
+    hIndexFontSize: number;
+    @Operand<string>(chain(access('hIndexNorm'), colorScaleNormQuantitative))
+    hIndexColor: string;
+    @Operand<string>(chain(access('hIndexNorm'), colorScaleNormQuantitativeStroke))
+    hIndexStrokeColor: string;
+
+    updateGlobalStats(globalStats: any) {
+      super.updateGlobalStats(globalStats);
+      this.sortedCites = (this.sortedCites || []).sort((n1, n2) => n2 - n1);
+      this.hIndex = hIndex(this.sortedCites);
+      globalStats.hIndexMax = Math.max(globalStats.hIndexMax || 0, this.hIndex);
+    }
+  }
+  return HIndex;
+}

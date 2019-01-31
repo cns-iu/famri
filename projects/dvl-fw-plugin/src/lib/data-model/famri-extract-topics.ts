@@ -14,9 +14,14 @@ export function extractTopics(publications: Publication[]): Topic[] {
         topic = topics[name] = new Topic({
           name,
           numPapers: 0,
+          numPapers1: 0,
+          numPapers2: 0,
           numCites: 0,
+          sortedCites: [],
+          hIndex: 0,
           firstYear: pub.publicationYear || 0,
           lastYear: pub.publicationYear || 0,
+          // position: positions[name] || undefined,
           globalStats
         });
         topicList.push(topic);
@@ -24,7 +29,15 @@ export function extractTopics(publications: Publication[]): Topic[] {
 
       topic.numPapers++;
       topic.numCites += pub.numCites || 0;
+      if (pub.hasCites) {
+        topic.sortedCites.push(pub.numCites);
+      }
       if (pub.publicationYear) {
+        if (pub.publicationYear < 2010) {
+          topic.numPapers1++;
+        } else {
+          topic.numPapers2++;
+        }
         if (pub.publicationYear < topic.firstYear) {
           topic.firstYear = pub.publicationYear;
         }
