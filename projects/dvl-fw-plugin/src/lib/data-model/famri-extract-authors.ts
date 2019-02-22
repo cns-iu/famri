@@ -33,8 +33,14 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
           numPapers1: 0,
           numPapers2: 0,
           numCites: 0,
-          sortedCites: [],
+          numCites1: 0,
+          numCites2: 0,
           hIndex: 0,
+          hIndex1: 0,
+          hIndex2: 0,
+          sortedCites: [],
+          sortedCites1: [],
+          sortedCites2: [],
           firstYear: pub.publicationYear || 0,
           lastYear: pub.publicationYear || 0,
           position: positions[name] || undefined,
@@ -50,10 +56,18 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
         author.sortedCites.push(pub.numCites);
       }
       if (pub.publicationYear) {
-        if (pub.publicationYear < 2010) {
+        if (pub.publicationYear <= 2005) {
           author.numPapers1++;
-        } else {
+          author.numCites1 += pub.numCites || 0;
+          if (pub.hasCites) {
+            author.sortedCites1.push(pub.numCites);
+          }
+        } else if (pub.publicationYear <= 2009) {
           author.numPapers2++;
+          author.numCites2 += pub.numCites || 0;
+          if (pub.hasCites) {
+            author.sortedCites2.push(pub.numCites);
+          }
         }
         if (pub.publicationYear < author.firstYear) {
           author.firstYear = pub.publicationYear;

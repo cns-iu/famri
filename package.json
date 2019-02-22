@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:cli": "webpack --config projects/dvl-fw-plugin/src/lib/cli/webpack.config.js"
+    "build:cli": "webpack --config projects/dvl-fw-plugin/src/lib/cli/webpack.config.js",
+    "build:data": "bash ./run.sh"
   },
   "private": true,
   "dependencies": {

@@ -34,7 +34,11 @@ export class CoAuthorLink {
   author1: string;
   author2: string;
   numPapers: number;
+  numPapers1: number;
+  numPapers2: number;
   numCites: number;
+  numCites1: number;
+  numCites2: number;
   firstYear: number;
   lastYear: number;
   globalStats: CoAuthorLinkStats;

@@ -18,7 +18,11 @@ export function extractCoAuthorLinks(publications: Publication[]): CoAuthorLink[
             author1: author1.name,
             author2: author2.name,
             numPapers: 0,
+            numPapers1: 0,
+            numPapers2: 0,
             numCites: 0,
+            numCites1: 0,
+            numCites2: 0,
             firstYear: pub.publicationYear || 0,
             lastYear: pub.publicationYear || 0,
             Author1: author1,
@@ -30,11 +34,20 @@ export function extractCoAuthorLinks(publications: Publication[]): CoAuthorLink[
 
         coAuthorLink.numPapers++;
         coAuthorLink.numCites += pub.numCites || 0;
-        if (pub.publicationYear < coAuthorLink.firstYear) {
-          coAuthorLink.firstYear = pub.publicationYear;
-        }
-        if (pub.publicationYear > coAuthorLink.lastYear) {
-          coAuthorLink.lastYear = pub.publicationYear;
+        if (pub.publicationYear) {
+          if (pub.publicationYear <= 2005) {
+            coAuthorLink.numPapers1++;
+            coAuthorLink.numCites1 += pub.numCites || 0;
+          } else if (pub.publicationYear <= 2009) {
+            coAuthorLink.numPapers2++;
+            coAuthorLink.numCites2 += pub.numCites || 0;
+          }
+          if (pub.publicationYear < coAuthorLink.firstYear) {
+            coAuthorLink.firstYear = pub.publicationYear;
+          }
+          if (pub.publicationYear > coAuthorLink.lastYear) {
+            coAuthorLink.lastYear = pub.publicationYear;
+          }
         }
       }
     });

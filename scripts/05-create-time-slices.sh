@@ -8,5 +8,5 @@ slice() {
   famri export-project $OUT/database_$1-$2.yml $OUT/project_$1-$2.yml
 }
 
-slice 2002 2007
-slice 2002 2012
+slice 2002 2005
+slice 2002 2009

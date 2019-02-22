@@ -1,12 +1,18 @@
 import { access, chain, constant, map, Operand } from '@ngx-dino/core';
 
 import {
-  Mappable, WithFirstYear, WithLastYear, WithDefaultStyles, WithNumPapers, WithNumPapers1, WithNumPapers2, WithNumCites, WithHIndex
+  Mappable, WithFirstYear, WithLastYear, WithDefaultStyles,
+  WithNumPapers, WithNumPapers1, WithNumPapers2,
+  WithNumCites, WithNumCites1, WithNumCites2,
+  WithHIndex, WithHIndex1, WithHIndex2
 } from '../shared/mappers';
 
 // @dynamic
 export class Author extends
-    WithHIndex(WithNumPapers1(WithNumPapers2(WithNumPapers(WithNumCites(WithFirstYear(WithLastYear(WithDefaultStyles(Mappable)))))))) {
+    WithHIndex1(WithHIndex2(WithHIndex(
+    WithNumPapers1(WithNumPapers2(WithNumPapers(
+    WithNumCites1(WithNumCites2(WithNumCites(
+    WithFirstYear(WithLastYear(WithDefaultStyles(Mappable)))))))))))) {
   name: string;
   topTopicArea: string;
   topicAreas: string[];
