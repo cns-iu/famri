@@ -38,7 +38,8 @@ export function extractCoAuthorLinks(publications: Publication[]): CoAuthorLink[
           if (pub.publicationYear <= 2005) {
             coAuthorLink.numPapers1++;
             coAuthorLink.numCites1 += pub.numCites || 0;
-          } else if (pub.publicationYear <= 2009) {
+          }
+          if (pub.publicationYear <= 2009) {
             coAuthorLink.numPapers2++;
             coAuthorLink.numCites2 += pub.numCites || 0;
           }

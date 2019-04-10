@@ -62,7 +62,8 @@ export function extractAuthors(publications: Publication[], coauthorNetwork?: Gr
           if (pub.hasCites) {
             author.sortedCites1.push(pub.numCites);
           }
-        } else if (pub.publicationYear <= 2009) {
+        }
+        if (pub.publicationYear <= 2009) {
           author.numPapers2++;
           author.numCites2 += pub.numCites || 0;
           if (pub.hasCites) {

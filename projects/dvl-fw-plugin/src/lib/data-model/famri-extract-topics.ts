@@ -33,9 +33,10 @@ export function extractTopics(publications: Publication[]): Topic[] {
         topic.sortedCites.push(pub.numCites);
       }
       if (pub.publicationYear) {
-        if (pub.publicationYear < 2010) {
+        if (pub.publicationYear <= 2005) {
           topic.numPapers1++;
-        } else {
+        }
+        if (pub.publicationYear <= 2009) {
           topic.numPapers2++;
         }
         if (pub.publicationYear < topic.firstYear) {
