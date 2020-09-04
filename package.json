@@ -51,7 +51,7 @@
     "lodash": "^4.17.11",
     "nano-sql": "^1.8.3",
     "pako": "^1.0.8",
-    "papaparse": "^4.6.3",
+    "papaparse": "^5.2.0",
     "reflib": "^1.6.4",
     "reflib-cli": "^1.2.14",
     "rxjs": "~6.3.3",
